@@ -22,8 +22,8 @@ __pycache__/
 *.log
 *.tmp
 
-# Uploads (logs, screenshots)
-/uploads/
+# Uploads are stored in the repo for continuity (removed from ignore)
+# (comment kept for clarity: uploads/ is intentionally tracked now)
 
 # Asset bundles (game internals, too large)
 /last_asylum_117/
