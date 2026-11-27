@@ -43,3 +43,4 @@ assets/solver.html
 # Cache directories
 .cache/
 .npm/
+double_joy_ssh_key

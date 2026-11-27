@@ -10,7 +10,7 @@ from fastapi.responses import HTMLResponse
 
 app = FastAPI(title="Двойная радость — Решалка")
 
-HTML_PATH = Path(__file__).parent / "double_joy_android_apk" / "base_ui_source.html"
+HTML_PATH = Path(__file__).parent.parent / "double_joy_android_apk" / "base_ui_source.html"
 
 @app.get("/")
 async def index():
