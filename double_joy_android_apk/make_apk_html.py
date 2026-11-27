@@ -1714,6 +1714,7 @@ APK_PHONE_RUNTIME_JS = r"""
         </div>
       </div>
     `;
+    document.body.appendChild(faqModal);
 
     const menuModal = document.createElement("div");
     menuModal.id = "apkMenuModal";
