@@ -1,0 +1,3217 @@
+{
+  "game": {
+    "name_ru": "Двойная радость",
+    "name_en": "Joy Multiplied",
+    "activityId": 8200606,
+    "maxRow": 7,
+    "maxCol": 6,
+    "maxPosCount": 42,
+    "eliminateNum": 10,
+    "dispelScore": 1,
+    "startCombo": 1,
+    "firstPos": {
+      "x": -213,
+      "y": 0,
+      "z": 258
+    },
+    "offsetX": 86,
+    "offsetZ": 100,
+    "evenColZShift": 50,
+    "checkboardCfg": {
+      "1": {
+        "centerPos": {
+          "x": 48,
+          "y": -80,
+          "z": -71
+        },
+        "defaultScale": 1.2
+      },
+      "2": {
+        "centerPos": {
+          "x": 39,
+          "y": -80,
+          "z": -71
+        },
+        "defaultScale": 1.2
+      },
+      "3": {
+        "centerPos": {
+          "x": 48,
+          "y": -80,
+          "z": -71
+        },
+        "defaultScale": 1.2
+      },
+      "4": {
+        "centerPos": {
+          "x": 100,
+          "y": -80,
+          "z": -150
+        },
+        "defaultScale": 1.2
+      }
+    }
+  },
+  "colors": [
+    {
+      "color": "red",
+      "id": 1,
+      "pattern": "pic_fkds_tuan1"
+    },
+    {
+      "color": "orange",
+      "id": 2,
+      "pattern": "pic_fkds_tuan2"
+    },
+    {
+      "color": "yellow",
+      "id": 3,
+      "pattern": "pic_fkds_tuan3"
+    },
+    {
+      "color": "green",
+      "id": 4,
+      "pattern": "pic_fkds_tuan4"
+    },
+    {
+      "color": "indigo",
+      "id": 5,
+      "pattern": "pic_fkds_tuan5"
+    },
+    {
+      "color": "blue",
+      "id": 6,
+      "pattern": "pic_fkds_tuan6"
+    },
+    {
+      "color": "violet",
+      "id": 7,
+      "pattern": "pic_fkds_tuan7"
+    },
+    {
+      "color": "pink",
+      "id": 8,
+      "pattern": "pic_fkds_tuan8"
+    }
+  ],
+  "combos": [
+    {
+      "id": 1,
+      "maxNum": 1,
+      "minNum": 1,
+      "score": 6
+    },
+    {
+      "id": 2,
+      "maxNum": 2,
+      "minNum": 2,
+      "score": 12
+    },
+    {
+      "id": 3,
+      "maxNum": 3,
+      "minNum": 3,
+      "score": 18
+    },
+    {
+      "id": 4,
+      "maxNum": 4,
+      "minNum": 4,
+      "score": 24
+    },
+    {
+      "id": 5,
+      "maxNum": 5,
+      "minNum": 5,
+      "score": 30
+    },
+    {
+      "id": 6,
+      "maxNum": 99999,
+      "minNum": 6,
+      "score": 36
+    }
+  ],
+  "stages": [
+    {
+      "stageNo": 1,
+      "passId": 1001,
+      "passNo": 1,
+      "targetScore": 80,
+      "boardId": 401,
+      "boardType": 4,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 8,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 17,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 22,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 2,
+      "passId": 1002,
+      "passNo": 2,
+      "targetScore": 180,
+      "boardId": 511,
+      "boardType": 1,
+      "cells": [
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 17,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 3,
+      "passId": 1003,
+      "passNo": 3,
+      "targetScore": 300,
+      "boardId": 402,
+      "boardType": 4,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 8,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 20,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 17,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 22,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 4,
+      "passId": 1004,
+      "passNo": 4,
+      "targetScore": 350,
+      "boardId": 521,
+      "boardType": 1,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 50,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 17,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 100,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 200,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 29,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 5,
+      "passId": 1005,
+      "passNo": 5,
+      "targetScore": 400,
+      "boardId": 512,
+      "boardType": 1,
+      "cells": [
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 6,
+      "passId": 1006,
+      "passNo": 6,
+      "targetScore": 400,
+      "boardId": 531,
+      "boardType": 2,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 8,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 200,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 350,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 27,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 33,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 7,
+      "passId": 1007,
+      "passNo": 7,
+      "targetScore": 450,
+      "boardId": 513,
+      "boardType": 1,
+      "cells": [
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 5,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 200,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 33,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 350,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 8,
+      "passId": 1008,
+      "passNo": 9,
+      "targetScore": 500,
+      "boardId": 541,
+      "boardType": 1,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 431234,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 3
+            },
+            {
+              "colour": 2,
+              "count": 3
+            },
+            {
+              "colour": 3,
+              "count": 3
+            },
+            {
+              "colour": 4,
+              "count": 3
+            }
+          ],
+          "initStr": "1_3|2_3|3_3|4_3",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 5,
+          "initCardId": 435678,
+          "initLayers": [
+            {
+              "colour": 5,
+              "count": 3
+            },
+            {
+              "colour": 6,
+              "count": 3
+            },
+            {
+              "colour": 7,
+              "count": 3
+            },
+            {
+              "colour": 8,
+              "count": 3
+            }
+          ],
+          "initStr": "5_3|6_3|7_3|8_3",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 100,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 17,
+          "initCardId": 530001,
+          "initLayers": [
+            {
+              "colour": 8,
+              "count": 2
+            },
+            {
+              "colour": 5,
+              "count": 2
+            },
+            {
+              "colour": 1,
+              "count": 2
+            },
+            {
+              "colour": 3,
+              "count": 2
+            },
+            {
+              "colour": 7,
+              "count": 2
+            }
+          ],
+          "initStr": "8_2|5_2|1_2|3_2|7_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 400
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 200,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 29,
+          "initCardId": 431357,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 3
+            },
+            {
+              "colour": 3,
+              "count": 3
+            },
+            {
+              "colour": 5,
+              "count": 3
+            },
+            {
+              "colour": 7,
+              "count": 3
+            }
+          ],
+          "initStr": "1_3|3_3|5_3|7_3",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 33,
+          "initCardId": 432468,
+          "initLayers": [
+            {
+              "colour": 2,
+              "count": 3
+            },
+            {
+              "colour": 4,
+              "count": 3
+            },
+            {
+              "colour": 6,
+              "count": 3
+            },
+            {
+              "colour": 8,
+              "count": 3
+            }
+          ],
+          "initStr": "2_3|4_3|6_3|8_3",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 9,
+      "passId": 1009,
+      "passNo": 8,
+      "targetScore": 550,
+      "boardId": 501,
+      "boardType": 3,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 5,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 8,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 200,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 300,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 75,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 17,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 450,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 150,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 350,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 22,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 250,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 29,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 33,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 10,
+      "passId": 1010,
+      "passNo": 10,
+      "targetScore": 600,
+      "boardId": 522,
+      "boardType": 1,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 200,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 17,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 500,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 350,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 29,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 11,
+      "passId": 1011,
+      "passNo": 11,
+      "targetScore": 600,
+      "boardId": 532,
+      "boardType": 2,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 8,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 432468,
+          "initLayers": [
+            {
+              "colour": 2,
+              "count": 3
+            },
+            {
+              "colour": 4,
+              "count": 3
+            },
+            {
+              "colour": 6,
+              "count": 3
+            },
+            {
+              "colour": 8,
+              "count": 3
+            }
+          ],
+          "initStr": "2_3|4_3|6_3|8_3",
+          "unlockCellScore": 0,
+          "unlockCardScore": 300
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 431357,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 3
+            },
+            {
+              "colour": 3,
+              "count": 3
+            },
+            {
+              "colour": 5,
+              "count": 3
+            },
+            {
+              "colour": 7,
+              "count": 3
+            }
+          ],
+          "initStr": "1_3|3_3|5_3|7_3",
+          "unlockCellScore": 0,
+          "unlockCardScore": 450
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 27,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 33,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 12,
+      "passId": 1012,
+      "passNo": 12,
+      "targetScore": 600,
+      "boardId": 512,
+      "boardType": 1,
+      "cells": [
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 13,
+      "passId": 1013,
+      "passNo": 13,
+      "targetScore": 600,
+      "boardId": 523,
+      "boardType": 1,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 431357,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 3
+            },
+            {
+              "colour": 3,
+              "count": 3
+            },
+            {
+              "colour": 5,
+              "count": 3
+            },
+            {
+              "colour": 7,
+              "count": 3
+            }
+          ],
+          "initStr": "1_3|3_3|5_3|7_3",
+          "unlockCellScore": 0,
+          "unlockCardScore": 330
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 17,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 530002,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 2
+            },
+            {
+              "colour": 3,
+              "count": 2
+            },
+            {
+              "colour": 5,
+              "count": 2
+            },
+            {
+              "colour": 2,
+              "count": 2
+            },
+            {
+              "colour": 6,
+              "count": 2
+            }
+          ],
+          "initStr": "1_2|3_2|5_2|2_2|6_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 480
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 432468,
+          "initLayers": [
+            {
+              "colour": 2,
+              "count": 3
+            },
+            {
+              "colour": 4,
+              "count": 3
+            },
+            {
+              "colour": 6,
+              "count": 3
+            },
+            {
+              "colour": 8,
+              "count": 3
+            }
+          ],
+          "initStr": "2_3|4_3|6_3|8_3",
+          "unlockCellScore": 0,
+          "unlockCardScore": 190
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 29,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 14,
+      "passId": 1014,
+      "passNo": 14,
+      "targetScore": 600,
+      "boardId": 533,
+      "boardType": 2,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 8,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 27,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 33,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    },
+    {
+      "stageNo": 15,
+      "passId": 1015,
+      "passNo": 15,
+      "targetScore": 600,
+      "boardId": 542,
+      "boardType": 1,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 421234,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 2
+            },
+            {
+              "colour": 2,
+              "count": 2
+            },
+            {
+              "colour": 3,
+              "count": 2
+            },
+            {
+              "colour": 4,
+              "count": 2
+            }
+          ],
+          "initStr": "1_2|2_2|3_2|4_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 100
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 5,
+          "initCardId": 425678,
+          "initLayers": [
+            {
+              "colour": 5,
+              "count": 2
+            },
+            {
+              "colour": 6,
+              "count": 2
+            },
+            {
+              "colour": 7,
+              "count": 2
+            },
+            {
+              "colour": 8,
+              "count": 2
+            }
+          ],
+          "initStr": "5_2|6_2|7_2|8_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 300
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 10,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 17,
+          "initCardId": 530002,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 2
+            },
+            {
+              "colour": 3,
+              "count": 2
+            },
+            {
+              "colour": 5,
+              "count": 2
+            },
+            {
+              "colour": 2,
+              "count": 2
+            },
+            {
+              "colour": 6,
+              "count": 2
+            }
+          ],
+          "initStr": "1_2|3_2|5_2|2_2|6_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 500
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 24,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 29,
+          "initCardId": 421357,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 2
+            },
+            {
+              "colour": 3,
+              "count": 2
+            },
+            {
+              "colour": 5,
+              "count": 2
+            },
+            {
+              "colour": 7,
+              "count": 2
+            }
+          ],
+          "initStr": "1_2|3_2|5_2|7_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 200
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 33,
+          "initCardId": 422468,
+          "initLayers": [
+            {
+              "colour": 2,
+              "count": 2
+            },
+            {
+              "colour": 4,
+              "count": 2
+            },
+            {
+              "colour": 6,
+              "count": 2
+            },
+            {
+              "colour": 8,
+              "count": 2
+            }
+          ],
+          "initStr": "2_2|4_2|6_2|8_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 400
+        }
+      ]
+    },
+    {
+      "stageNo": 16,
+      "passId": 1016,
+      "passNo": 19,
+      "targetScore": 600,
+      "boardId": 556,
+      "boardType": 3,
+      "cells": [
+        {
+          "cellId": 1,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 2,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 3,
+          "initCardId": 422468,
+          "initLayers": [
+            {
+              "colour": 2,
+              "count": 2
+            },
+            {
+              "colour": 4,
+              "count": 2
+            },
+            {
+              "colour": 6,
+              "count": 2
+            },
+            {
+              "colour": 8,
+              "count": 2
+            }
+          ],
+          "initStr": "2_2|4_2|6_2|8_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 200
+        },
+        {
+          "cellId": 4,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 5,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 8,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 9,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 11,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 12,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 15,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 16,
+          "initCardId": 421234,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 2
+            },
+            {
+              "colour": 2,
+              "count": 2
+            },
+            {
+              "colour": 3,
+              "count": 2
+            },
+            {
+              "colour": 4,
+              "count": 2
+            }
+          ],
+          "initStr": "1_2|2_2|3_2|4_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 250
+        },
+        {
+          "cellId": 18,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 19,
+          "initCardId": 425678,
+          "initLayers": [
+            {
+              "colour": 5,
+              "count": 2
+            },
+            {
+              "colour": 6,
+              "count": 2
+            },
+            {
+              "colour": 7,
+              "count": 2
+            },
+            {
+              "colour": 8,
+              "count": 2
+            }
+          ],
+          "initStr": "5_2|6_2|7_2|8_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 400
+        },
+        {
+          "cellId": 22,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 23,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 25,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 26,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 29,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 30,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 31,
+          "initCardId": 421357,
+          "initLayers": [
+            {
+              "colour": 1,
+              "count": 2
+            },
+            {
+              "colour": 3,
+              "count": 2
+            },
+            {
+              "colour": 5,
+              "count": 2
+            },
+            {
+              "colour": 7,
+              "count": 2
+            }
+          ],
+          "initStr": "1_2|3_2|5_2|7_2",
+          "unlockCellScore": 0,
+          "unlockCardScore": 300
+        },
+        {
+          "cellId": 32,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        },
+        {
+          "cellId": 33,
+          "initCardId": 0,
+          "initLayers": [],
+          "initStr": "",
+          "unlockCellScore": 0,
+          "unlockCardScore": 0
+        }
+      ]
+    }
+  ],
+  "totalCardTemplates": 7532
+}
