@@ -3192,7 +3192,7 @@ def main() -> None:
     new_empty_plans = """    if (!state.plans.length) {
       el.plansContainer.innerHTML = `
         <div class="apk-crest-showcase-card" data-open-crest="1" style="cursor:pointer;" title="Нажмите, чтобы увеличить герб [SUD] Suicide Squad">
-          <img src="${window.APK_SUD_CREST_URI}" alt="[SUD] Suicide Squad — Двойная радость!" />
+          <img class="apk-crest-showcase-img" src="${window.APK_SUD_CREST_URI}" alt="[SUD] Suicide Squad — Двойная радость!" />
           <div class="apk-crest-showcase-hint">Задайте стопки в руке или нажмите 🚀 Оверлей → ✋ Рука (коснитесь герба для увеличения)</div>
         </div>
       `;
