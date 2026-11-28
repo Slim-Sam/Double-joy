@@ -1628,6 +1628,11 @@ APK_PHONE_RUNTIME_JS = r"""
             btn.disabled = false; btn.style.opacity = "";
             st.style.color = "#34d399";
             st.textContent = "✅ " + (s.message || "Загружено") + (s.url ? " · " + s.url : "");
+            // После УСПЕШНОЙ отправки очищаем журнал в приложении (правило пользователя)
+            try {
+              var _clrBtn = document.getElementById("btnClearLog");
+              if (_clrBtn) { _clrBtn.click(); st.textContent += " · журнал очищен"; }
+            } catch (_) {}
           } else if (s.state === "error") {
             clearInterval(pollTimer); pollTimer = null;
             btn.disabled = false; btn.style.opacity = "";
