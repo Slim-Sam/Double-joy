@@ -310,7 +310,7 @@ APK_CUSTOM_CSS = r"""
     align-items: stretch !important;
     flex: 1 1 auto !important;
     gap: 7px !important;
-    padding: 6px 6px 14px !important;
+    padding: 6px 6px calc(14px + env(safe-area-inset-bottom, 0px)) !important;
     width: 100% !important;
     max-width: 680px !important;
     min-width: 0 !important;
@@ -2455,6 +2455,38 @@ APK_PHONE_RUNTIME_JS = r"""
     attachSheetSwipeDown(menuModal, document.getElementById("apkMenuModalBody"), menuModal.querySelector(".apk-modal-hdr"));
     attachSheetSwipeDown(diffModal, document.getElementById("apkDiffModalBody"), diffModal.querySelector(".apk-modal-hdr"));
     attachSheetSwipeDown(crestModal, document.getElementById("apkCrestModalBody"), crestModal.querySelector(".apk-modal-hdr"));
+
+    // ===== v1.0.39: надёжная прокрутка главного экрана =====
+    // На части Android WebView тач-события не доходят до корневого скроллера
+    // (страница «замерзает», низ обрезан и недостижим). Мост прокручивает
+    // страницу сам через window.scrollBy — работает всегда, не зависит от
+    // нативного тач-скролла. Тапы/клик не страдают: preventDefault вызывается
+    // только после порога 8px. Шторки/модалки/кнопки/поля исключены — у них
+    // своё поведение и свой скролл.
+    (function setupMainTouchScrollBridge() {
+      var EXCLUDE = ".apk-modal-sheet, .panel.col-editor, .apk-sheet-backdrop, select, input, textarea, button, a, [contenteditable]";
+      var active = false, aborted = false, lastY = 0, startX = 0, startY = 0;
+      document.addEventListener("touchstart", function (ev) {
+        if (ev.touches.length !== 1 || (ev.target && ev.target.closest && ev.target.closest(EXCLUDE))) {
+          active = false; aborted = true; return;
+        }
+        var t = ev.touches[0];
+        active = true; aborted = false;
+        lastY = t.clientY; startX = t.clientX; startY = t.clientY;
+      }, { passive: true });
+      document.addEventListener("touchmove", function (ev) {
+        if (!active || aborted || ev.touches.length !== 1) return;
+        var t = ev.touches[0];
+        var dx = t.clientX - startX, dy = t.clientY - startY;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) { aborted = true; return; }
+        if (Math.abs(dy) < 8) return;
+        if (ev.cancelable) ev.preventDefault();
+        window.scrollBy(0, lastY - t.clientY);
+        lastY = t.clientY;
+      }, { passive: false });
+      document.addEventListener("touchend", function () { active = false; aborted = false; }, { passive: true });
+      document.addEventListener("touchcancel", function () { active = false; aborted = false; }, { passive: true });
+    })();
 
     const sudBrandBarEl = document.getElementById("apkSudBrandBar");
     if (sudBrandBarEl) {
