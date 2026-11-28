@@ -1381,7 +1381,9 @@ public final class CaptureOverlayService extends Service {
                     String s3 = SolverEngine.formatLayersPlain(st.waits.get(3));
                     logSubs.add("Слот #1: " + s1 + " | Слот #2: " + s2 + " | Слот #3: " + s3);
                     if (st.lastPlan != null && st.lastPlan.deadlockStopAll) {
-                        logSubs.add("🛑 СТОП! Безвыходный тупик (пусто кл.: 0) — ПАЧКИ НЕ СТАВИТЬ, жмите 🔄 Перемешать"
+                        logSubs.add("🛑 СТОП! Безвыходный тупик (пусто кл.: 0) — ПАЧКИ НЕ СТАВИТЬ"
+                                + (SolverEngine.boosterTipsAllowed(AppState.get() != null ? AppState.get().boostRefresh : -1)
+                                        ? ", жмите 🔄 Перемешать" : "")
                                 + (st.lastPlan.hammerCellId > 0 ? (" или 🔨 #" + st.lastPlan.hammerCellId) : ""));
                         if (st.lastPlan.hammerCellId > 0 && st.lastPlan.hammerReasonRu != null && !st.lastPlan.hammerReasonRu.isEmpty()) {
                             logSubs.add("💡 " + st.lastPlan.hammerReasonRu);
@@ -1401,6 +1403,23 @@ public final class CaptureOverlayService extends Service {
                         }
                     }
                     logSubs.add("📋 Поле: " + st.formatBoardSummaryPlain());
+                    st.setBoosters(vo.boostHammer, vo.boostMove, vo.boostRefresh);
+                    List<List<SolverEngine.Layer>> predH = SolverEngine.getLastNextHandPredicted();
+                    if (predH != null && predH.size() == 3) {
+                        logSubs.add("⏱ Прогноз сл.руки: ⬅" + SolverEngine.formatLayersPlain(predH.get(0))
+                                + " · ⬆" + SolverEngine.formatLayersPlain(predH.get(1))
+                                + " · ➡" + SolverEngine.formatLayersPlain(predH.get(2)));
+                    }
+                    int predChk = SolverEngine.peekPredCheckForWaits(st.waits);
+                    if (predChk >= 0) {
+                        logSubs.add("⏱ Сверка прогноза: " + predChk + "/3"
+                                + (predChk >= 3 ? " ✓" : (predChk == 2 ? " ⚠" : " ✗")));
+                    }
+                    if (vo.boostHammer >= 0 || vo.boostMove >= 0 || vo.boostRefresh >= 0) {
+                        logSubs.add("🎮 Бустеры: 🔨" + vo.boostHammer + " · ✚" + vo.boostMove + " · 🔄" + vo.boostRefresh);
+                    } else {
+                        logSubs.add("🎮 Бустеры: панель не распознана");
+                    }
 
                     String detScrInfo = (vo.detectedScore >= 0 ? (", экран: " + vo.detectedScore) : "")
                             + ", режим: " + (st.mode != null ? st.mode : "balanced");
@@ -1974,28 +1993,32 @@ public final class CaptureOverlayService extends Service {
         lblMini.setTextColor(0xFFCBD5E1);
         lblMini.setSingleLine(true);
         lblMini.setEllipsize(TextUtils.TruncateAt.END);
+        boolean rerollOk = SolverEngine.boosterTipsAllowed(AppState.get() != null ? AppState.get().boostRefresh : -1);
         if (plan != null && plan.deadlockStopAll) {
-            lblMini.setText("🛑 СТОП! НЕ СТАВЬТЕ ПАЧКИ — жмите 🔄"
-                    + (plan.hammerCellId > 0 ? (" или 🔨 #" + plan.hammerCellId) : " Перемешать"));
+            lblMini.setText("🛑 СТОП! НЕ СТАВЬТЕ ПАЧКИ"
+                    + (rerollOk ? " — жмите 🔄" : "")
+                    + (plan.hammerCellId > 0 ? (" или 🔨 #" + plan.hammerCellId) : (rerollOk ? " Перемешать" : "")));
             lblMini.setTextColor(0xFFFCA5A5);
         } else if (plan != null && plan.partialBeforeReroll && !plan.steps.isEmpty()) {
             lblMini.setText("💡 ТОЛЬКО Шаг 1–" + plan.steps.size() + " (+" + plan.totalGainedScore
-                    + ", пусто " + plan.finalEmptyCells + ") → ЗАТЕМ 🔄 и ✋ Рука!");
+                    + ", пусто " + plan.finalEmptyCells + ")"
+                    + (rerollOk ? " → ЗАТЕМ 🔄 и ✋ Рука!" : " → 🔄 недоступен!"));
             lblMini.setTextColor(0xFFFDE047);
         } else if (plan != null && !plan.steps.isEmpty()
                 && plan.hammerCellId > 0 && plan.finalEmptyCells <= 2) {
             lblMini.setText("⚠ Пусто " + plan.finalEmptyCells + "! Лучше 🔨 #" + plan.hammerCellId
-                    + (plan.recommendReroll ? " или 🔄" : "")
+                    + ((plan.recommendReroll && rerollOk) ? " или 🔄" : "")
                     + " · Итог " + plan.finalScore);
             lblMini.setTextColor(0xFFE9D5FF);
         } else if (plan != null && !plan.steps.isEmpty() && plan.recommendReroll) {
-            lblMini.setText("⚠ Тупик (пусто " + plan.finalEmptyCells + ")! Совет: 🔄 Перемешать"
+            lblMini.setText("⚠ Тупик (пусто " + plan.finalEmptyCells + ")! "
+                    + (rerollOk ? "Совет: 🔄 Перемешать" : "бустеров нет")
                     + (plan.hammerCellId > 0 ? (" или 🔨#" + plan.hammerCellId) : "")
                     + " · Итог " + plan.finalScore);
             lblMini.setTextColor(0xFFFDE047);
         } else if (plan != null && !plan.steps.isEmpty()) {
             lblMini.setText("⠿ Итог " + plan.finalScore + " (+" + plan.totalGainedScore
-                    + ") · Пусто " + plan.finalEmptyCells + " · Сл.рука " + Math.round(plan.mergeProbNextHand) + "%");
+                    + ") · Пусто " + plan.finalEmptyCells + " · Сл.рука " + Math.round(plan.mergeProbNextHand) + "%" + handPredSuffix());
         } else {
             lblMini.setText("⠿ Стопки руки: нажмите «✋ Рука» (или «⏩ Шаг+Рука»)");
         }
@@ -2066,6 +2089,7 @@ public final class CaptureOverlayService extends Service {
 
         String[] shortSlotNames = {"", "ЛЕВ #1", "СР #2", "ПРАВ #3"};
         boolean fatalDeadlock = plan != null && (plan.deadlockStopAll || (plan.recommendReroll && plan.finalEmptyCells == 0));
+        boolean rerollOkCard = SolverEngine.boosterTipsAllowed(AppState.get() != null ? AppState.get().boostRefresh : -1);
         int renderedCards = 0;
 
         for (int idx = 0; idx < 3; idx++) {
@@ -2158,9 +2182,14 @@ public final class CaptureOverlayService extends Service {
                 targetTv.setTextColor(fatalDeadlock ? 0xFFFCA5A5 : 0xFFFDE047);
             } else if (holdForBooster) {
                 if (plan.partialBeforeReroll) {
-                    targetTv.setText("после Ш" + plan.steps.size() + " → 🔄");
+                    targetTv.setText(rerollOkCard ? ("после Ш" + plan.steps.size() + " → 🔄")
+                            : ("после Ш" + plan.steps.size() + " → СТОП"));
                 } else {
-                    targetTv.setText(plan.hammerCellId > 0 ? ("жми 🔄 / 🔨#" + plan.hammerCellId) : "жми 🔄 Перемеш.");
+                    if (plan.hammerCellId > 0) {
+                        targetTv.setText(rerollOkCard ? ("жми 🔄 / 🔨#" + plan.hammerCellId) : ("жми 🔨#" + plan.hammerCellId));
+                    } else {
+                        targetTv.setText(rerollOkCard ? "жми 🔄 Перемеш." : "бустеров нет");
+                    }
                 }
                 targetTv.setTextColor(0xFFFCA5A5);
             } else {
@@ -2245,6 +2274,59 @@ public final class CaptureOverlayService extends Service {
         }
 
         host.addView(cardsRow);
+
+        // ⏱ Прогноз следующей руки (таблица, обученная на логах) — та же нотация, что у карточек
+        List<List<SolverEngine.Layer>> predHand = SolverEngine.getLastNextHandPredicted();
+        if (predHand != null && predHand.size() == 3) {
+            LinearLayout predRow = new LinearLayout(this);
+            predRow.setOrientation(LinearLayout.HORIZONTAL);
+            predRow.setGravity(Gravity.CENTER_VERTICAL);
+            LinearLayout.LayoutParams prLp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            prLp.topMargin = sdp(3);
+            predRow.setLayoutParams(prLp);
+
+            TextView predLbl = new TextView(this);
+            predLbl.setText("⏱ сл.рука:");
+            predLbl.setTextColor(0xFF93C5FD);
+            setScaledTextDp(predLbl, 8.6f);
+            predLbl.setTypeface(Typeface.DEFAULT_BOLD);
+            predRow.addView(predLbl);
+
+            for (int pi = 0; pi < 3; pi++) {
+                List<SolverEngine.Layer> pSlot = predHand.get(pi);
+                if (pSlot == null || pSlot.isEmpty()) continue;
+                if (pi > 0) {
+                    TextView sep = new TextView(this);
+                    sep.setText("·");
+                    sep.setTextColor(0xFF64748B);
+                    setScaledTextDp(sep, 8f);
+                    predRow.addView(sep);
+                }
+                ImageView pIc = new ImageView(this);
+                pIc.setImageResource(getChipDrawableId(pSlot.get(pSlot.size() - 1).colour));
+                LinearLayout.LayoutParams pIcLp = new LinearLayout.LayoutParams(sdp(11), sdp(10));
+                pIcLp.rightMargin = sdp(2);
+                predRow.addView(pIc, pIcLp);
+
+                TextView pTx = new TextView(this);
+                pTx.setText(SolverEngine.formatLayersPlain(pSlot) + "▲");
+                pTx.setTextColor(0xFFE2E8F0);
+                setScaledTextDp(pTx, 8.4f);
+                pTx.setTypeface(Typeface.DEFAULT_BOLD);
+                pTx.setSingleLine(true);
+                predRow.addView(pTx);
+            }
+            host.addView(predRow);
+        }
+    }
+
+    /** Суффикс шапки: результат сверки прогноза при смене руки (N/3 ✓/⚠/✗). */
+    private String handPredSuffix() {
+        int pc = SolverEngine.getLastHandPredCheck();
+        if (pc < 0) return "";
+        String mark = (pc >= 3) ? " ✓" : (pc == 2 ? " ⚠" : " ✗");
+        return " · ⏱ прогноз " + pc + "/3" + mark;
     }
 
     /**

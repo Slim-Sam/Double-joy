@@ -1792,7 +1792,7 @@ APK_PHONE_RUNTIME_JS = r"""
             • <b>🔬 Максимальный</b> — для сложных стартов и концовок.<br/>
             Приложение <b>само предлагает</b> режим при сканировании.<br/><br/>
             <b>🔍 Масштаб интерфейса</b> — если что-то не помещается: Меню → <span class="apk-faq-kbd">−</span> / <span class="apk-faq-kbd">Авто</span> / <span class="apk-faq-kbd">+</span>.<br/><br/>
-            <b>💡 Учитывать подсказки при расчёте</b> — по умолчанию <b>ВЫКЛ</b>: игнорируются <b>только игровые подсказки</b> (🔨 молоток, 🔄 обновить, переместить столбик) — <b>а всё, что предлагает приложение</b> (планы, предупреждения о тупике, советы режимов), <b>работает всегда</b>. ВКЛ — дополнительно учитываются применённые игровые подсказки.<br/><br/>
+            <b>💡 Учитывать подсказки при расчёте</b> — по умолчанию <b>ВЫКЛ</b>: игнорируются <b>только игровые подсказки</b> (🔨 молоток, 🔄 обновить, переместить столбик) — <b>а всё, что предлагает приложение</b> (планы, предупреждения о тупике, советы режимов), <b>работает всегда</b>. ВКЛ — показываются советы по бустерам (🔨 молоток, 🔄 обновить — <b>только если бустер реально есть в наличии</b>, приложение проверяет панель бустеров по скрину) и учитываются применённые игровые подсказки.<br/><br/>
             <b>📷 Сохранять скриншот с интерфейсом</b> — по умолчанию <b>ВЫКЛ</b>. Сохраняется только чистый игровой кадр. ВКЛ — также сохраняется кадр с оверлейом (полезно для диагностики).
           </div>
         </div>
@@ -1852,7 +1852,7 @@ APK_PHONE_RUNTIME_JS = r"""
               <span id="chkUseHintsInCalcThumb" style="position:absolute; inset:0; background:#334155; border-radius:22px; transition:0.2s; pointer-events:none;"></span>
             </label>
           </div>
-          <div style="font-size:10.5px; color:#64748b; line-height:1.35; margin-top:5px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);">OFF (по умолчанию) — игнорируются ТОЛЬКО игровые подсказки (🔨 молоток, 🔄 обновить, переместить столбик). Все советы приложения (план, предупреждения о тупике, режимы) работают всегда. ВКЛ — учитываются и применённые игровые подсказки.</div>
+          <div style="font-size:10.5px; color:#64748b; line-height:1.35; margin-top:5px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);">OFF (по умолчанию) — игнорируются ТОЛЬКО игровые подсказки (🔨 молоток, 🔄 обновить, переместить столбик). Все советы приложения (план, предупреждения о тупике, режимы) работают всегда. ВКЛ — советы по бустерам (🔨/🔄/переместить — только при наличии бустера) и применённые игровые подсказки.</div>
         </div>
         <div style="background:#172136; border:1px solid #334155; border-radius:9px; padding:8px 9px; margin-bottom:10px;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
@@ -3194,7 +3194,7 @@ def main() -> None:
       summary.className = "plan-summary";
       summary.textContent = plan.summary;
       card.appendChild(summary);"""
-    new_summary_block = """      if (plan.recommendReroll && plan.rerollReason) {
+    new_summary_block = """      if (plan.recommendReroll && plan.rerollReason && plan.rerollTipOk !== false) {
         const rerollBox = document.createElement("div");
         rerollBox.className = "apk-reroll-alert" + ((plan.deadlockStopAll || plan.finalEmptyCells === 0) ? "" : " warn");
         rerollBox.textContent = plan.rerollReason;
@@ -3233,7 +3233,7 @@ def main() -> None:
       } else {
         const stopBadge = document.createElement("div");
         stopBadge.style.cssText = "width:100%;padding:8px 10px;border-radius:8px;background:#450a0a;border:1.4px solid #f87171;color:#fecaca;font-size:12.2px;font-weight:800;text-align:center;";
-        stopBadge.textContent = "🛑 СТОП! НЕ СТАВЬТЕ ПАЧКИ — нажмите в игре 🔄 Перемешать" + (plan.hammerCellId ? (" или ударьте 🔨 #" + plan.hammerCellId) : "");
+        stopBadge.textContent = "🛑 СТОП! НЕ СТАВЬТЕ ПАЧКИ" + (plan.rerollTipOk !== false ? " — нажмите в игре 🔄 Перемешать" : "") + (plan.hammerCellId ? (" или ударьте 🔨 #" + plan.hammerCellId) : "");
         actionsRow.appendChild(stopBadge);
       }"""
     if old_apply1 not in html:

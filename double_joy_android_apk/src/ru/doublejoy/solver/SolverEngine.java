@@ -1615,6 +1615,19 @@ public final class SolverEngine {
 
         // Точное предсказание следующей руки (таблица из логов) для look-ahead прокатки
         List<List<Layer>> predNextHand = predictNextHand(stageNo, validHand);
+        // Сверка прогноза: при СМЕНЕ руки сравниваем прошлое предсказание с новой рукой
+        synchronized (SolverEngine.class) {
+            String curSig = slotsSig(handToSlots(validHand));
+            boolean handChanged = (sPrevHandSig != null && curSig != null && !sPrevHandSig.equals(curSig));
+            if (handChanged) {
+                sPredCheck = (sNextHandPredicted != null)
+                        ? matchCount(sNextHandPredicted, handToSlots(validHand)) : -1;
+            } else if (sNextHandPredicted == null) {
+                sPredCheck = -1;
+            }
+            sNextHandPredicted = predNextHand;
+            if (curSig != null) sPrevHandSig = curSig;
+        }
 
         if (!finalists.get(0).isWin && rolloutLimit > 0) {
             List<Node> rolloutPool = new ArrayList<>(rolloutLimit);
@@ -1988,7 +2001,8 @@ public final class SolverEngine {
             }
         }
 
-        if (bestCid > 0) {
+        // ГЕЙТ: совет по🔨 только при ВКЛ «учитывать подсказки» и молотке в наличии (0 = нет)
+        if (bestCid > 0 && boosterTipsAllowed(AppState.get() != null ? AppState.get().boostHammer : -1)) {
             CellState st = rootCells[bestCid];
             String topDesc = SHORT_NAMES_RU[st.topColor()] + "×" + st.topCount() + (st.layers.size() > 1 ? "+" : "");
             plan.hammerCellId = bestCid;
@@ -2049,6 +2063,7 @@ public final class SolverEngine {
                     po.put("finalEmptyCells", p.finalEmptyCells);
                     po.put("isWin", p.isWin);
                     po.put("mergeProbNextHand", p.mergeProbNextHand);
+                    po.put("rerollTipOk", boosterTipsAllowed(AppState.get() != null ? AppState.get().boostRefresh : -1));
                     po.put("burstProbNextHand", p.burstProbNextHand);
                     po.put("recommendReroll", p.recommendReroll);
                     po.put("partialBeforeReroll", p.partialBeforeReroll);
@@ -2115,6 +2130,10 @@ public final class SolverEngine {
         public int detectedStageNo = -1;
         public int detectedScore = -1;
         public int detectedTargetScore = -1;
+        // Инвентарь бустеров игрока (снизу экрана): -1 = панель не распознана
+        public int boostHammer = -1;
+        public int boostMove = -1;
+        public int boostRefresh = -1;
         public CellState[] cells;
         public Map<Integer, List<Layer>> waits = new HashMap<>();
         public float[] measuredHeightSlices = new float[MAX_POS_COUNT + 1];
@@ -2382,6 +2401,214 @@ public final class SolverEngine {
             }
         }
         return bestCh;
+    }
+
+    // ===================== БУСТЕРЫ: ГЕЙТ СОВЕТОВ =====================
+    /** Советы по бустерам (🔨 молоток / 🔄 обновить / переместить) показываются ТОЛЬКО при ВКЛ
+     *  «Учитывать подсказки» и известном ненулевом запасе (0 = «нет бустера»; -1 = панель не
+     *  распознана — не блокируем). */
+    public static boolean boosterTipsAllowed(int boostCount) {
+        AppState ap = AppState.get();
+        if (ap == null || !ap.useHintsInCalc) return false;
+        return boostCount != 0;
+    }
+
+    // ===================== ПРОГНОЗ СЛЕДУЮЩЕЙ РУКИ: СВЕРКА =====================
+    private static List<List<Layer>> sNextHandPredicted;
+    private static String sPrevHandSig;
+    private static int sPredCheck = -1;
+
+    private static String slotSig(List<Layer> layers) {
+        if (layers == null || layers.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        for (Layer l : layers) sb.append(l.colour).append('_').append(l.count).append('|');
+        return sb.toString();
+    }
+
+    private static List<List<Layer>> handToSlots(List<HandItem> hand) {
+        if (hand == null) return null;
+        List<List<Layer>> out = new ArrayList<>(hand.size());
+        for (HandItem hi : hand) out.add(hi.layers);
+        return out;
+    }
+
+    private static String slotsSig(List<List<Layer>> slots) {
+        if (slots == null || slots.isEmpty()) return null;
+        List<String> sigs = new ArrayList<>();
+        for (List<Layer> sl : slots) {
+            String sg = slotSig(sl);
+            if (sg.isEmpty()) return null;
+            sigs.add(sg);
+        }
+        Collections.sort(sigs);
+        return String.join(",", sigs);
+    }
+
+    private static String waitsSig(Map<Integer, List<Layer>> waits) {
+        if (waits == null) return null;
+        List<List<Layer>> slots = new ArrayList<>(3);
+        for (int sid = 1; sid <= 3; sid++) {
+            List<Layer> w = waits.get(sid);
+            slots.add(w != null ? w : new ArrayList<Layer>());
+        }
+        return slotsSig(slots);
+    }
+
+    /** Сколько из3 предсказанных стопок реально пришло (множественное сравнение сигнатур). */
+    private static int matchCount(List<List<Layer>> pred, List<List<Layer>> actual) {
+        if (pred == null || actual == null) return -1;
+        List<String> pa = new ArrayList<>();
+        for (List<Layer> sl : pred) pa.add(slotSig(sl));
+        List<String> aa = new ArrayList<>();
+        for (List<Layer> sl : actual) aa.add(slotSig(sl));
+        int matched = 0;
+        for (String p : pa) {
+            int ix = aa.indexOf(p);
+            if (ix >= 0) { matched++; aa.remove(ix); }
+        }
+        return matched;
+    }
+
+    /** Проверка прогноза на момент СКАНА руки (лог): если рука уже сменилась — сверяем сразу. */
+    public static int peekPredCheckForWaits(Map<Integer, List<Layer>> waits) {
+        synchronized (SolverEngine.class) {
+            String curSig = waitsSig(waits);
+            if (curSig == null || sPrevHandSig == null) return sPredCheck;
+            if (curSig.equals(sPrevHandSig)) return sPredCheck;
+            if (sNextHandPredicted == null) return -1;
+            List<List<Layer>> actual = new ArrayList<>(3);
+            for (int sid = 1; sid <= 3; sid++) {
+                List<Layer> w = waits.get(sid);
+                actual.add(w != null ? w : new ArrayList<Layer>());
+            }
+            return matchCount(sNextHandPredicted, actual);
+        }
+    }
+
+    public static List<List<Layer>> getLastNextHandPredicted() {
+        synchronized (SolverEngine.class) { return sNextHandPredicted; }
+    }
+
+    public static int getLastHandPredCheck() {
+        synchronized (SolverEngine.class) { return sPredCheck; }
+    }
+
+    // ===================== ДЕТЕКТОР ПАНЕЛИ БУСТЕРОВ =====================
+    /** Панель бустеров внизу экрана: [🔨][✚][🔄] с красными бейджами-счётчиками.
+     *  @return {hammer, move, refresh} либо {-1,-1,-1}, если панель не видна. */
+    static int[] detectBoosters(int[] px, int W, int H, int[] hsvH, int[] hsvS, int[] hsvV) {
+        int[] res = {-1, -1, -1};
+        if (W < 160 || H < 240) return res;
+        int y0 = (int) (0.855 * H), y1 = Math.min(H - 1, (int) (0.995 * H));
+        if (y1 - y0 < 14) return res;
+        int spanY = y1 - y0 + 1;
+        int[] colBtn = new int[W];
+        int[] colRed = new int[W];
+        for (int y = y0; y <= y1; y++) {
+            for (int x = 0; x < W; x++) {
+                int i = y * W + x;
+                int h = hsvH[i], sc = hsvS[i], vc = hsvV[i];
+                int r = (px[i] >> 16) & 0xFF, g = (px[i] >> 8) & 0xFF, b = px[i] & 0xFF;
+                // кнопки: оранжево-жёлтые
+                if (h >= 14 && h <= 48 && sc >= 110 && vc >= 140 && r > 150 && b < 130) colBtn[x]++;
+                // красные бейджи-счётчики
+                if (r >= 160 && g <= 95 && b <= 95 && (r - g) >= 90) colRed[x]++;
+            }
+        }
+        // кластеры колонок
+        List<int[]> btnRuns = new ArrayList<>(), redRuns = new ArrayList<>();
+        collectRuns(colBtn, spanY, 0.16, btnRuns);
+        collectRuns(colRed, spanY, 0.07, redRuns);
+        if (btnRuns.size() < 3 || redRuns.isEmpty()) return res;
+        // три ЛЕВЫЕ кнопки (hammer, move, refresh) — отбраковка узких
+        btnRuns.sort((x, y) -> Integer.compare(x[0], y[0]));
+        List<int[]> btn3 = new ArrayList<>();
+        for (int[] r : btnRuns) {
+            if (r[1] - r[0] + 1 >= Math.max(6, (int) (0.045 * W))) btn3.add(r);
+            if (btn3.size() == 3) break;
+        }
+        if (btn3.size() < 3) return res;
+        int[] out = {-1, -1, -1};
+        for (int bi = 0; bi < 3; bi++) {
+            int[] btn = btn3.get(bi);
+            int bC = (btn[0] + btn[1]) / 2;
+            // бейдж: красный кластер у правого верхнего угла кнопки
+            int[] badge = null;
+            int bestD = Integer.MAX_VALUE;
+            for (int[] rr : redRuns) {
+                int rc = (rr[0] + rr[1]) / 2;
+                if (rc < btn[0] - (int) (0.03 * W) || rc > btn[1] + (int) (0.06 * W)) continue;
+                int d = Math.abs(rc - bC);
+                if (d < bestD) { bestD = d; badge = rr; }
+            }
+            if (badge == null) continue;
+            // bbox бейджа по y внутри x-диапазона
+            int bx0 = Math.max(0, badge[0] - 2), bx1 = Math.min(W - 1, badge[1] + 2);
+            int by0 = Integer.MAX_VALUE, by1 = -1;
+            for (int y = y0; y <= y1; y++) {
+                for (int x = bx0; x <= bx1; x++) {
+                    int i = y * W + x;
+                    int r = (px[i] >> 16) & 0xFF, g = (px[i] >> 8) & 0xFF, b = px[i] & 0xFF;
+                    if (r >= 160 && g <= 95 && b <= 95 && (r - g) >= 90) {
+                        if (y < by0) by0 = y;
+                        if (y > by1) by1 = y;
+                    }
+                }
+            }
+            if (by1 < by0 || by1 - by0 < 5) continue;
+            // цифры бейджа: белые пиксели внутри
+            int rw = bx1 - bx0 + 1, rh = by1 - by0 + 1;
+            byte[] wMask = new byte[rw * rh];
+            for (int y = 0; y < rh; y++) {
+                for (int x = 0; x < rw; x++) {
+                    int i = (by0 + y) * W + (bx0 + x);
+                    int r = (px[i] >> 16) & 0xFF, g = (px[i] >> 8) & 0xFF, b = px[i] & 0xFF;
+                    int sc = hsvS[i];
+                    if (Math.min(r, Math.min(g, b)) >= 140 && sc <= 95) wMask[y * rw + x] = 1;
+                }
+            }
+            List<GlyphBox> glyphs = extractBinaryGlyphs(
+                    wMask, rw, rh, Math.max(4, (int) Math.round(H * 0.007)),
+                    Math.max(12, (int) Math.round(H * 0.030)), 3);
+            if (glyphs.isEmpty()) continue;
+            // фильтр по общей линии цифр
+            List<Double> cys = new ArrayList<>(), hs = new ArrayList<>();
+            for (GlyphBox g : glyphs) { cys.add(g.y + 0.5 * g.h); hs.add((double) g.h); }
+            double medCy = medianDouble(cys), medH = medianDouble(hs);
+            List<GlyphBox> filt = new ArrayList<>();
+            for (GlyphBox g : glyphs) {
+                if (Math.abs((g.y + 0.5 * g.h) - medCy) <= 0.8 * medH && g.h >= 0.6 * medH) filt.add(g);
+            }
+            if (filt.isEmpty()) continue;
+            Collections.sort(filt, (a, b2) -> Integer.compare(a.x, b2.x));
+            StringBuilder sb = new StringBuilder();
+            for (GlyphBox g : filt) {
+                char ch = classifyGlyph(g);
+                if (ch >= '0' && ch <= '9') sb.append(ch);
+            }
+            if (sb.length() == 0 || sb.length() > 2) continue;
+            try {
+                int cnt = Integer.parseInt(sb.toString());
+                out[bi] = Math.min(cnt, 99);
+            } catch (NumberFormatException ignore) {}
+        }
+        // панель считается распознанной, только если найдены все3 кнопки и хотя бы один бейдж
+        if (out[0] < 0 && out[1] < 0 && out[2] < 0) return res;
+        return out;
+    }
+
+    private static void collectRuns(int[] cols, int spanY, double fill, List<int[]> runs) {
+        int thr = Math.max(2, (int) Math.round(fill * spanY));
+        int runS = -1;
+        for (int x = 0; x < cols.length; x++) {
+            if (cols[x] >= thr) {
+                if (runS < 0) runS = x;
+            } else {
+                if (runS >= 0 && x - runS >= 4) runs.add(new int[]{runS, x - 1});
+                runS = -1;
+            }
+        }
+        if (runS >= 0 && cols.length - runS >= 4) runs.add(new int[]{runS, cols.length - 1});
     }
 
     private static int[] detectHeaderStageAndScore(
@@ -3115,6 +3342,10 @@ public final class SolverEngine {
         out.detectedStageNo = hdr[0];
         out.detectedScore = hdr[1];
         out.detectedTargetScore = hdr[2];
+        int[] bst = detectBoosters(px, W, H, hsvH, hsvS, hsvV);
+        out.boostHammer = bst[0];
+        out.boostMove = bst[1];
+        out.boostRefresh = bst[2];
 
         int[][] capProto = new int[9][3];
         int[][] sideProto = new int[9][3];

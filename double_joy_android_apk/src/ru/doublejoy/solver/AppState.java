@@ -44,6 +44,15 @@ public final class AppState {
     public long stateSeq = 1L;
     public String scoreMismatchWarning = "";
     public boolean useHintsInCalc = false;
+    // Инвентарь бустеров игрока по скрину: -1 = панель не распознана, 0 = бустера нет
+    public int boostHammer = -1;
+    public int boostMove = -1;
+    public int boostRefresh = -1;
+    public synchronized void setBoosters(int hammer, int move, int refresh) {
+        boostHammer = hammer;
+        boostMove = move;
+        boostRefresh = refresh;
+    }
     public boolean saveUiScreenshots = false;
     public final List<JSONObject> pendingLogQueue = new ArrayList<>();
 
