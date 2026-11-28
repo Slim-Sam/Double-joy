@@ -276,8 +276,9 @@ public class LevelEmulator {
         int rerollBudget = args.length > 4 ? Integer.parseInt(args[4]) : 8;
         int hammerBudget = args.length > 5 ? Integer.parseInt(args[5]) : 8;
 
-        // включаем расчёт совета молотка (для эмулятора), панель бустеров «не распознана» → не блокируем
-        AppState.get().useHintsInCalc = true;
+        // Подсказки игры НЕ учитываем: молоток, обновление (реролл), перенос столбца —
+        // только чистая игра решалкой (бюджеты молотка/реролла приходят = 0 извне).
+        AppState.get().useHintsInCalc = false;
         AppState.get().boostHammer = -1;
 
         loadTransitions();
