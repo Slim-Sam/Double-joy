@@ -3756,7 +3756,6 @@ def main() -> None:
     html = html.replace("__SUD_CREST_DATA_URI__", crest_uri)
 
     DST.parent.mkdir(parents=True, exist_ok=True)
-    DST.write_text(html, encoding="utf-8")
     # --- подстановка встроенного PAT из .builtin_pat (секрет только локально) ---
     try:
         import pathlib as _pl
@@ -3766,6 +3765,7 @@ def main() -> None:
             html = html.replace('const GH_BUILTIN_PAT = "";', 'const GH_BUILTIN_PAT = "' + _pat + '";')
     except Exception:
         pass
+    DST.write_text(html, encoding="utf-8")
     print(f"Wrote APK-exclusive {DST} ({DST.stat().st_size / 1024:.1f} KB)")
 
 
