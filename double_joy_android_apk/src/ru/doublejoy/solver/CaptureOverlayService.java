@@ -2051,6 +2051,10 @@ public final class CaptureOverlayService extends Service {
         } else {
             lblMini.setText("⠿ Стопки руки: нажмите «✋ Рука» (или «⏩ Шаг+Рука»)");
         }
+        // 🎲 Шанс прохождения (%) — в плавающем окне; считается по «Шаг+Рука», без подсказок.
+        if (st.lastPassProbPct >= 0) {
+            lblMini.setText(lblMini.getText() + " · 🎲 " + st.lastPassProbPct + "%");
+        }
         LinearLayout.LayoutParams lmLp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
         topBar.addView(lblMini, lmLp);
 

@@ -1843,11 +1843,7 @@ APK_PHONE_RUNTIME_JS = r"""
             <span style="font-size:12px; font-weight:700; color:#cbd5e1; white-space:nowrap;">🧠 Режим расчёта:</span>
           </div>
           <div id="apkSolverModeDesc" style="font-size:11px; color:#94a3b8; line-height:1.38; margin-top:6px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);"></div>
-          <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-top:6px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);">
-            <span style="font-size:12.5px; font-weight:800; color:#cbd5e1;">🎲 Шанс прохождения: <b id="apkPassProbVal" style="color:#f8fafc;">—</b></span>
-            <span style="font-size:10px; font-weight:600; color:#64748b;">без подсказок · по Шаг+Рука</span>
-          </div>
-          <div style="font-size:11px; color:#7dd3fc; margin-top:4px; font-weight:700; letter-spacing:0.2px;">🔮 Сл. рука: <span id="apkPredHandVal" style="color:#bae6fd; font-weight:600;">—</span></div>
+          <div style="font-size:11px; color:#7dd3fc; margin-top:6px; font-weight:700; letter-spacing:0.2px;">🔮 Сл. рука: <span id="apkPredHandVal" style="color:#bae6fd; font-weight:600;">—</span></div>
         </div>
         <div style="background:#172136; border:1px solid #334155; border-radius:9px; padding:8px 9px; margin-bottom:10px;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
