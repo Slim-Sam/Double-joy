@@ -607,6 +607,21 @@ public final class MainActivity extends Activity {
         }
 
         @JavascriptInterface
+        public boolean startGithubUploadJson(String rawBaseName, String payloadJsonStr,
+                                             String repo, String branch, String dir, String pat) {
+            final String safeJson = payloadJsonStr != null ? payloadJsonStr : "{}";
+            final String safeBase = (rawBaseName != null && !rawBaseName.isEmpty())
+                    ? rawBaseName : "Лог_Скрины_Двойная_радость";
+            return GitHubLogUploader.start(getApplicationContext(), safeBase, safeJson,
+                    repo, branch, dir, pat);
+        }
+
+        @JavascriptInterface
+        public String getGithubUploadStatusJson() {
+            return GitHubLogUploader.statusJson();
+        }
+
+        @JavascriptInterface
         public boolean copyToClipboard(String text) {
             try {
                 final String safeText = text != null ? text : "";

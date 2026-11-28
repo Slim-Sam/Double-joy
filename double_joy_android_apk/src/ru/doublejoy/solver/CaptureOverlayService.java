@@ -549,6 +549,8 @@ public final class CaptureOverlayService extends Service {
         actionsRow.addView(btnCheckBoard, b3Lp);
         expandedCard.addView(actionsRow);
 
+
+
         // --- Compact Status / Reroll Warning Banner (shown only when needed so header stays slim!) ---
         lblCompactBanner = new TextView(this);
         lblCompactBanner.setTextColor(0xFFE2E8F0);
@@ -1751,6 +1753,8 @@ public final class CaptureOverlayService extends Service {
     }
 
     private void refreshOverlayUi() {
+        try {
+        } catch (Exception ignored) {}
         if (expandedCard == null || rootContainer == null) return;
         AppState st = AppState.get();
         ensureDefaultGeometry();

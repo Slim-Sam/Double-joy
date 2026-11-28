@@ -1481,7 +1481,9 @@ APK_PHONE_RUNTIME_JS = r"""
           <button type="button" id="btnApkBigDownloadLog" class="apk-log-dl-big">⬇ Скачать лог + скрины (.txt)</button>
           <button type="button" id="btnApkBigHtmlLog" class="apk-log-copy-big" title="Открыть одним HTML в браузере">🌐 .html</button>
           <button type="button" id="btnApkBigCopyLog" class="apk-log-copy-big">📋 Текст</button>
+          <button type="button" id="btnApkBigGithubLog" class="apk-log-copy-big" title="Отправить zip-лог со скринами в репозиторий GitHub">📤 GitHub</button>
         </div>
+        <div id="githubUploadStatus" style="font-size:11.5px; line-height:1.4; color:#94a3b8; word-break:break-all; margin-bottom:6px;"></div>
       </div>
     `;
     document.body.appendChild(logModal);
@@ -1553,6 +1555,94 @@ APK_PHONE_RUNTIME_JS = r"""
         setTimeout(() => { cpBtn.textContent = "📋 Текст"; }, 1400);
       } catch (_) {}
     });
+
+    // --- 📤 Отправка лога на GitHub (Contents API + PAT из localStorage) ---
+    const GH_PAT_KEY = "double_joy_apk_gh_pat_v1";
+    const GH_REPO_KEY = "double_joy_apk_gh_repo_v1";
+    const GH_BRANCH_KEY = "double_joy_apk_gh_branch_v1";
+    const GH_DEFAULT_REPO = "Slim-Sam/Double-joy";
+    const GH_DEFAULT_BRANCH = "master";
+    function ghSaveSettings() {
+      try {
+        const pt = document.getElementById("inpGhPat");
+        const rp = document.getElementById("inpGhRepo");
+        const br = document.getElementById("inpGhBranch");
+        if (pt) localStorage.setItem(GH_PAT_KEY, pt.value.trim());
+        if (rp) localStorage.setItem(GH_REPO_KEY, rp.value.trim() || GH_DEFAULT_REPO);
+        if (br) localStorage.setItem(GH_BRANCH_KEY, br.value.trim() || GH_DEFAULT_BRANCH);
+      } catch (_) {}
+    }
+    function ghSettings() {
+      ghSaveSettings();
+      let pat = "", repo = GH_DEFAULT_REPO, branch = GH_DEFAULT_BRANCH;
+      try {
+        pat = localStorage.getItem(GH_PAT_KEY) || "";
+        repo = localStorage.getItem(GH_REPO_KEY) || GH_DEFAULT_REPO;
+        branch = localStorage.getItem(GH_BRANCH_KEY) || GH_DEFAULT_BRANCH;
+      } catch (_) {}
+      return { pat: pat, repo: repo, branch: branch };
+    }
+    (function setupGithubUpload() {
+      const btn = document.getElementById("btnApkBigGithubLog");
+      const st = document.getElementById("githubUploadStatus");
+      if (!btn || !st) return;
+      let pollTimer = null;
+      btn.addEventListener("click", () => {
+        const gh = ghSettings();
+        if (!gh.pat) {
+          st.style.color = "#fbbf24";
+          st.textContent = "⚠ Не задан GitHub PAT — открой 💾 Сейвы и настройки";
+          return;
+        }
+        if (!(window.AndroidHost && typeof window.AndroidHost.startGithubUploadJson === "function")) {
+          st.style.color = "#f87171";
+          st.textContent = "❌ bridge отсутствует — нужна новая сборка APK";
+          return;
+        }
+        if (pollTimer) return;
+        const baseName = `Лог_Скрины_Двойная_радость_Этап${state.stageNo}`;
+        let started = false;
+        try {
+          started = window.AndroidHost.startGithubUploadJson(
+              baseName, buildLogArchiveJsonPayload(), gh.repo, gh.branch, "uploads", gh.pat);
+        } catch (_) { started = false; }
+        if (!started) {
+          st.style.color = "#fbbf24";
+          st.textContent = "⏳ Уже идёт отправка…";
+          return;
+        }
+        btn.disabled = true;
+        btn.style.opacity = "0.6";
+        st.style.color = "#93c5fd";
+        st.textContent = "📤 Отправка…";
+        const t0 = Date.now();
+        pollTimer = setInterval(() => {
+          let s = {};
+          try {
+            s = JSON.parse((window.AndroidHost && window.AndroidHost.getGithubUploadStatusJson)
+              ? window.AndroidHost.getGithubUploadStatusJson() : "{}");
+          } catch (_) {}
+          if (s.state === "ok") {
+            clearInterval(pollTimer); pollTimer = null;
+            btn.disabled = false; btn.style.opacity = "";
+            st.style.color = "#34d399";
+            st.textContent = "✅ " + (s.message || "Загружено") + (s.url ? " · " + s.url : "");
+          } else if (s.state === "error") {
+            clearInterval(pollTimer); pollTimer = null;
+            btn.disabled = false; btn.style.opacity = "";
+            st.style.color = "#f87171";
+            st.textContent = "❌ " + (s.message || "Ошибка отправки");
+          } else if (Date.now() - t0 > 300000) {
+            clearInterval(pollTimer); pollTimer = null;
+            btn.disabled = false; btn.style.opacity = "";
+            st.style.color = "#f87171";
+            st.textContent = "❌ Таймаут отправки (5 мин)";
+          } else {
+            st.textContent = "📤 " + (s.message || "Отправка…");
+          }
+        }, 700);
+      });
+    })();
 
     const faqModal = document.createElement("div");
     faqModal.id = "apkFaqModal";
@@ -1724,7 +1814,7 @@ APK_PHONE_RUNTIME_JS = r"""
         <div class="apk-sheet-handle"></div>
       </div>
       <div class="apk-modal-hdr" style="padding-top:2px;">
-        <div class="apk-modal-title">💾 Сейвы и настройки (v1.0.28)</div>
+        <div class="apk-modal-title">💾 Сейвы и настройки (v1.0.36)</div>
         <button type="button" data-close-sheet="1" style="padding:4px 10px; font-size:12px;">✕ Закрыть</button>
       </div>
       <div class="apk-modal-body" id="apkMenuModalBody">
@@ -1768,9 +1858,37 @@ APK_PHONE_RUNTIME_JS = r"""
           </div>
           <div style="font-size:10.5px; color:#64748b; line-height:1.35; margin-top:5px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);">OFF — сохраняется только чистый игровой кадр, без оверлейных панелей и кнопок.</div>
         </div>
+        <div style="background:#172136; border:1px solid #334155; border-radius:9px; padding:8px 9px; margin-bottom:10px;">
+          <div style="font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">📤 Отправка логов на GitHub</div>
+          <div style="display:grid; gap:5px;">
+            <input type="password" id="inpGhPat" placeholder="GitHub PAT (Contents: Read and write)" autocomplete="off" spellcheck="false"
+              style="width:100%; box-sizing:border-box; background:#0f172a; border:1px solid #334155; border-radius:7px; color:#e2e8f0; padding:7px 8px; font-size:12px;" />
+            <div style="display:grid; grid-template-columns:2fr 1fr; gap:5px;">
+              <input type="text" id="inpGhRepo" placeholder="Slim-Sam/Double-joy" autocomplete="off" spellcheck="false"
+                style="width:100%; box-sizing:border-box; background:#0f172a; border:1px solid #334155; border-radius:7px; color:#e2e8f0; padding:7px 8px; font-size:12px;" />
+              <input type="text" id="inpGhBranch" placeholder="master" autocomplete="off" spellcheck="false"
+                style="width:100%; box-sizing:border-box; background:#0f172a; border:1px solid #334155; border-radius:7px; color:#e2e8f0; padding:7px 8px; font-size:12px;" />
+            </div>
+          </div>
+          <div style="font-size:10.5px; color:#64748b; line-height:1.35; margin-top:5px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);">PAT хранится только в этом приложении (localStorage) и в архив лога не попадает. Отправка: 📜 Журнал → 📤 GitHub (полный zip со скринами → uploads/).</div>
+        </div>
       </div>
     `;
     document.body.appendChild(menuModal);
+    (function bindGithubSettings() {
+      const pt = document.getElementById("inpGhPat");
+      const rp = document.getElementById("inpGhRepo");
+      const br = document.getElementById("inpGhBranch");
+      if (!pt || !rp || !br) return;
+      try {
+        pt.value = localStorage.getItem(GH_PAT_KEY) || "";
+        rp.value = localStorage.getItem(GH_REPO_KEY) || GH_DEFAULT_REPO;
+        br.value = localStorage.getItem(GH_BRANCH_KEY) || GH_DEFAULT_BRANCH;
+      } catch (_) {}
+      pt.addEventListener("change", ghSaveSettings);
+      rp.addEventListener("change", ghSaveSettings);
+      br.addEventListener("change", ghSaveSettings);
+    })();
     document.getElementById("apkSolverModeHost").appendChild(el.solveModeSelect);
     document.getElementById("apkMenuModalBody").appendChild(el.saveLoadDrawer);
     el.saveLoadDrawer.classList.remove("hidden");
@@ -1930,7 +2048,7 @@ APK_PHONE_RUNTIME_JS = r"""
       </div>
       <div class="apk-modal-body" id="apkCrestModalBody" style="display:flex; flex-direction:column; align-items:center; text-align:center;">
         <img src="${window.APK_SUD_CREST_URI}" style="width:min(90vw, 430px); height:auto; border-radius:14px; border:1.5px solid rgba(217,119,6,0.65); box-shadow:0 8px 28px rgba(0,0,0,0.75);" alt="[SUD] Suicide Squad — Двойная радость!" />
-        <div style="margin-top:10px; font-size:12.5px; color:#fde68a; font-weight:800;">Специальное издание для клана [SUD] Suicide Squad (v1.0.28)</div>
+        <div style="margin-top:10px; font-size:12.5px; color:#fde68a; font-weight:800;">Специальное издание для клана [SUD] Suicide Squad (v1.0.36)</div>
       </div>
     `;
     document.body.appendChild(crestModal);
@@ -2983,6 +3101,29 @@ def main() -> None:
     # 1. Enforce topK: 1 strictly inside APK solver calls + default stack editor count=1 & append-on-top
     if "topK: 5," not in html:
         raise RuntimeError("Expected 'topK: 5,' in source HTML")
+        # --- Bug 1.0 fix: unguarded OfflineEngine call sites → native bridge / friendly error ---
+    # 🎯 Расчёт: route through native AndroidHost.solveHandJson (AppState.solveWebJson).
+    _oh_old = "      const data = OfflineEngine.solveHand({"
+    assert html.count(_oh_old) == 1, f"solveHand site count={html.count(_oh_old)}"
+    html = html.replace(_oh_old,
+        "      const data = (typeof window.AndroidHost !== \"undefined\" && typeof window.AndroidHost.solveHandJson === \"function\")\n"
+        "        ? JSON.parse(window.AndroidHost.solveHandJson(JSON.stringify({")
+
+    _oh2_old = "      waits: waitsPayload,\n      }, state.config);"
+    assert html.count(_oh2_old) == 1, f"solveHand tail count={html.count(_oh2_old)}"
+    html = html.replace(_oh2_old,
+        "      waits: waitsPayload,\n      })))\n"
+        "        : (function () { throw new Error(\"Нативный решатель недоступен (нет AndroidHost)\"); })();")
+
+    # 📂 Скрин: нет нативного полного CV-анализа — вежливая ошибка вместо ReferenceError.
+    _ai_old = "      const data = OfflineEngine.analyzeImageElement("
+    assert html.count(_ai_old) == 1, f"analyzeImageElement site count={html.count(_ai_old)}"
+    html = html.replace(_ai_old,
+        "      if (typeof OfflineEngine === \"undefined\") {\n"
+        "        throw new Error(\"Распознавание снимка выключено в АПК — делай скан кнопкой в плавающем окне\");\n"
+        "      }\n"
+        "      const data = OfflineEngine.analyzeImageElement(")
+
     html = html.replace("topK: 5,", "topK: 1,", 1)
 
     if "brushCount: 4," not in html or 'brushAction: "replace",' not in html:

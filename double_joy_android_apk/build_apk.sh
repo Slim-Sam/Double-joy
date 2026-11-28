@@ -5,7 +5,7 @@ export LANG=C.UTF-8
 export LC_ALL=C.UTF-8
 
 PROJ="/home/user/double_joy_android_apk"
-SDK="/tmp/android_sdk"
+SDK="/home/user/android_sdk"
 AAPT2="$SDK/android-14/aapt2"
 D8="$SDK/android-14/d8"
 ZIPALIGN="$SDK/android-14/zipalign"
