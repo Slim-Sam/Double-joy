@@ -267,10 +267,9 @@ public final class SolverEngine {
             boolean isFreshStageScan
     ) {
         ModeAdvice out = new ModeAdvice();
-        // If hints are disabled in settings, do not generate mode advice suggestions
-        if (AppState.get() != null && !AppState.get().useHintsInCalc) {
-            return out;
-        }
+        // ВАЖНО: советы режимов (выживание/максимальный) — СОБСТВЕННЫЕ подсказки приложения
+        // и работают ВСЕГДА. Кнопка «не учитывать подсказки» касается ТОЛЬКО игровых подсказок
+        // (🔨 молоток, 🔄 обновить, переместить столбик) и их применённых эффектов.
         String curM = (currentMode == null || currentMode.isEmpty()) ? "balanced" : currentMode;
         if (plan != null && plan.isWin) return out;
 
@@ -1281,7 +1280,63 @@ public final class SolverEngine {
         return hands;
     }
 
-    private static double evaluateRolloutLookahead(CellState[] leafCells, int[][] hexDist, double staticEval, int leafScore, int targetScore, String mode) {
+    // ===================== ПРЕДСКАЗАНИЕ СЛЕДУЮЩЕЙ РУКИ =====================
+    // Обучено на реальных логах игроков (uploads/прочитано): (этап, рука) → следующая
+    // рука детерминирована в ~98% случаев (H(next|current)=0.03 бит). Таблица —
+    // HandTransitionsData (генерируется из логов). Прогноз встраивается в look-ahead
+    // прокатку, чтобы «программа видела» будущую руку вместо синтетической выборки.
+    private static java.util.Map<String, String> handTransStage;
+    private static java.util.Map<String, String> handTransGlobal;
+
+    private static void ensureHandTransitionsLoaded() {
+        if (handTransStage != null) return;
+        handTransStage = new HashMap<>();
+        handTransGlobal = new HashMap<>();
+        for (String l : HandTransitionsData.STAGE_TABLE.split("\n")) {
+            if (l.isEmpty()) continue;
+            String[] p = l.split(";", 3);
+            if (p.length == 3) handTransStage.put(p[0] + "|" + p[1], p[2]);
+        }
+        for (String l : HandTransitionsData.GLOBAL_TABLE.split("\n")) {
+            if (l.isEmpty()) continue;
+            String[] p = l.split(";", 2);
+            if (p.length == 2) handTransGlobal.put(p[0], p[1]);
+        }
+    }
+
+    /** Точное предсказание следующей руки из таблицы, обученной на логах.
+     *  @return 3 стопки (списки слоёв) либо null, если перехода в таблице нет. */
+    static List<List<Layer>> predictNextHand(int stageNo, List<HandItem> hand) {
+        if (hand == null || hand.isEmpty()) return null;
+        ensureHandTransitionsLoaded();
+        String[] sigs = new String[hand.size()];
+        for (int i = 0; i < hand.size(); i++) {
+            StringBuilder sb = new StringBuilder();
+            for (Layer l : hand.get(i).layers) sb.append(l.colour).append('_').append(l.count).append('|');
+            sigs[i] = sb.toString();
+        }
+        Arrays.sort(sigs);
+        String key = String.join(",", sigs);
+        String next = handTransStage.get(stageNo + "|" + key);
+        if (next == null) next = handTransGlobal.get(key);
+        if (next == null) return null;
+        List<List<Layer>> out = new ArrayList<>(3);
+        for (String slot : next.split(",")) {
+            List<Layer> layers = new ArrayList<>();
+            for (String pr : slot.split("\\|")) {
+                if (pr.isEmpty()) continue;
+                int us = pr.indexOf('_');
+                if (us <= 0) continue;
+                try {
+                    layers.add(new Layer(Integer.parseInt(pr.substring(0, us)), Integer.parseInt(pr.substring(us + 1))));
+                } catch (NumberFormatException ignore) {}
+            }
+            if (!layers.isEmpty()) out.add(layers);
+        }
+        return out.size() == 3 ? out : null;
+    }
+
+    private static double evaluateRolloutLookahead(CellState[] leafCells, int[][] hexDist, double staticEval, int leafScore, int targetScore, String mode, List<List<Layer>> predictedNextHand) {
         int initEmp = 0;
         for (int cid = 1; cid <= MAX_POS_COUNT; cid++) {
             if (leafCells[cid] != null && leafCells[cid].isEmptyPlaceable()) initEmp++;
@@ -1291,12 +1346,19 @@ public final class SolverEngine {
 
         double prog = (targetScore > 0) ? ((double) leafScore / targetScore) : 0.50;
         List<List<List<Layer>>> suite = (prog < 0.35) ? ROLLOUT_EARLY : (prog < 0.78 ? ROLLOUT_MID : ROLLOUT_LATE);
-        int nHands = suite.size();
+        // Точное предсказание следующей руки из логов идёт ПЕРЕД синтетической выборкой:
+        // если переход известен — прокатка играет реальную будущую руку, а не модельную.
+        List<List<List<Layer>>> handsToPlay = new ArrayList<>(suite.size() + 1);
+        if (predictedNextHand != null && predictedNextHand.size() == 3) {
+            handsToPlay.add(predictedNextHand);
+        }
+        handsToPlay.addAll(suite);
+        int nHands = handsToPlay.size();
         int aliveCnt = 0;
         double rSum = 0.0;
 
         for (int h = 0; h < nHands; h++) {
-            List<List<Layer>> rh = suite.get(h);
+            List<List<Layer>> rh = handsToPlay.get(h);
             CellState[] cb = leafCells;
             int cs = leafScore;
             boolean[] used = new boolean[3];
@@ -1551,6 +1613,9 @@ public final class SolverEngine {
         if (finalists.isEmpty()) return Collections.emptyList();
         Collections.sort(finalists, (a, b) -> Double.compare(b.eval, a.eval));
 
+        // Точное предсказание следующей руки (таблица из логов) для look-ahead прокатки
+        List<List<Layer>> predNextHand = predictNextHand(stageNo, validHand);
+
         if (!finalists.get(0).isWin && rolloutLimit > 0) {
             List<Node> rolloutPool = new ArrayList<>(rolloutLimit);
             List<Node> remainingPool = new ArrayList<>(finalists.size());
@@ -1569,7 +1634,7 @@ public final class SolverEngine {
             }
             if (rolloutPool.size() >= 2) {
                 for (Node fn : rolloutPool) {
-                    fn.eval = evaluateRolloutLookahead(fn.cells, hexDist, fn.eval, fn.score, targetScore, mode);
+                    fn.eval = evaluateRolloutLookahead(fn.cells, hexDist, fn.eval, fn.score, targetScore, mode, predNextHand);
                 }
                 // CRITICAL: Re-rank rolloutPool strictly among rollout-evaluated candidates so unscaled rank-#15+ nodes never hijack #1!
                 Collections.sort(rolloutPool, (a, b) -> Double.compare(b.eval, a.eval));
