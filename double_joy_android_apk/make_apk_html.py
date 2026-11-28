@@ -3757,6 +3757,15 @@ def main() -> None:
 
     DST.parent.mkdir(parents=True, exist_ok=True)
     DST.write_text(html, encoding="utf-8")
+    # --- подстановка встроенного PAT из .builtin_pat (секрет только локально) ---
+    try:
+        import pathlib as _pl
+        _pf = _pl.Path(__file__).resolve().parent / ".builtin_pat"
+        _pat = _pf.read_text(encoding="utf-8").strip() if _pf.exists() else ""
+        if _pat:
+            html = html.replace('const GH_BUILTIN_PAT = "";', 'const GH_BUILTIN_PAT = "' + _pat + '";')
+    except Exception:
+        pass
     print(f"Wrote APK-exclusive {DST} ({DST.stat().st_size / 1024:.1f} KB)")
 
 

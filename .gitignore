@@ -44,3 +44,7 @@ assets/solver.html
 .cache/
 .npm/
 double_joy_ssh_key
+
+# Встроенный PAT (секрет сборки, только локально)
+.builtin_pat
+double_joy_android_apk/.builtin_pat
