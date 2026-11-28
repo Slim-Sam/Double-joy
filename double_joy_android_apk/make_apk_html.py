@@ -1843,7 +1843,6 @@ APK_PHONE_RUNTIME_JS = r"""
             <span style="font-size:12px; font-weight:700; color:#cbd5e1; white-space:nowrap;">🧠 Режим расчёта:</span>
           </div>
           <div id="apkSolverModeDesc" style="font-size:11px; color:#94a3b8; line-height:1.38; margin-top:6px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);"></div>
-          <div style="font-size:11px; color:#7dd3fc; margin-top:6px; font-weight:700; letter-spacing:0.2px;">🔮 Сл. рука: <span id="apkPredHandVal" style="color:#bae6fd; font-weight:600;">—</span></div>
         </div>
         <div style="background:#172136; border:1px solid #334155; border-radius:9px; padding:8px 9px; margin-bottom:10px;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
@@ -3733,13 +3732,6 @@ def main() -> None:
             pv.style.color = pp >= 80 ? "#4ade80" : (pp >= 50 ? "#facc15" : (pp >= 0 ? "#f87171" : "#f8fafc"));
           }
         }
-        if (obj.predHandText !== undefined) {
-          const ph = document.getElementById("apkPredHandVal");
-          if (ph) ph.textContent = (obj.predHandText && String(obj.predHandText).length) ? obj.predHandText : "—";
-        }
-        // 🔮 Значки прогноза + сверка — в панели состава руки (predHandStrip).
-        if (obj.predHand !== undefined) state.predHand = obj.predHand;
-        if (obj.predCheckN !== undefined) state.predCheckN = obj.predCheckN;
         window.apkJustChangedStage = true;
         if (Array.isArray(obj.logEntries) && obj.logEntries.length > 0) {
           for (const le of obj.logEntries) {
@@ -3788,8 +3780,8 @@ def main() -> None:
     old_init_end = """      appendLog({
         cat: "save",
         tag: "СТАРТ",
-        html: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Автосохранение включено.`,
-        plain: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Автосохранение включено.`,
+        html: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Версия (v1.0.39). Автосохранение включено.`,
+        plain: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Версия (v1.0.39). Автосохранение включено.`,
       });
     }
   }"""

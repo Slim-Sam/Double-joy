@@ -2047,7 +2047,7 @@ public final class CaptureOverlayService extends Service {
             lblMini.setTextColor(0xFFFDE047);
         } else if (plan != null && !plan.steps.isEmpty()) {
             lblMini.setText("⠿ Итог " + plan.finalScore + " (+" + plan.totalGainedScore
-                    + ") · Пусто " + plan.finalEmptyCells + " · Сл.рука " + Math.round(plan.mergeProbNextHand) + "%" + handPredSuffix());
+                    + ") · Пусто " + plan.finalEmptyCells + " · Сл.рука " + Math.round(plan.mergeProbNextHand) + "%");
         } else {
             lblMini.setText("⠿ Стопки руки: нажмите «✋ Рука» (или «⏩ Шаг+Рука»)");
         }
@@ -2125,6 +2125,29 @@ public final class CaptureOverlayService extends Service {
         boolean rerollOkCard = SolverEngine.boosterTipsAllowed(AppState.get() != null ? AppState.get().boostRefresh : -1);
         int renderedCards = 0;
 
+        // Прогноз следующей руки + результат сверки (совпал ли прогноз) для отметок на карточках.
+        List<List<SolverEngine.Layer>> predHand = SolverEngine.getLastNextHandPredicted();
+        boolean[] predMatch = SolverEngine.getLastPredSlotMatch();
+        int[] predIdxForSlot = new int[]{-1, -1, -1};
+        if (predHand != null && predHand.size() == 3) {
+            boolean[] usedPred = new boolean[3];
+            for (int pass = 0; pass < 2; pass++) {
+                for (int sidP = 1; sidP <= 3; sidP++) {
+                    if (predIdxForSlot[sidP - 1] >= 0) continue;
+                    int bestJ = -1, bestSc = -1;
+                    for (int j = 0; j < 3; j++) {
+                        if (usedPred[j]) continue;
+                        int sc = layerOverlap(st.waits.get(sidP), predHand.get(j));
+                        if (sc > bestSc) { bestSc = sc; bestJ = j; }
+                    }
+                    if (bestJ >= 0 && (bestSc > 0 || pass == 1)) {
+                        usedPred[bestJ] = true;
+                        predIdxForSlot[sidP - 1] = bestJ;
+                    }
+                }
+            }
+        }
+
         for (int idx = 0; idx < 3; idx++) {
             int sid = slotOrder[idx];
             SolverEngine.StepMove sm = slotMoveMap.get(sid);
@@ -2183,7 +2206,16 @@ public final class CaptureOverlayService extends Service {
             slotTv.setTypeface(Typeface.DEFAULT_BOLD);
             slotTv.setPadding(sdp(4), 0, 0, 0);
             slotTv.setSingleLine(true);
-            line1.addView(slotTv);
+            LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
+                    0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+            line1.addView(slotTv, slp);
+            if (predMatch != null && sid >= 1 && sid <= 3) {
+                ImageView markIc = new ImageView(this);
+                markIc.setImageResource(predMatch[sid - 1] ? R.drawable.ic_pred_ok : R.drawable.ic_pred_bad);
+                LinearLayout.LayoutParams mkLp = new LinearLayout.LayoutParams(sdp(13), sdp(13));
+                mkLp.leftMargin = sdp(2);
+                line1.addView(markIc, mkLp);
+            }
             card.addView(line1);
 
             // Card Line 2: Top chip icon + "→ в #16 (+10)" or booster stop instruction
@@ -2286,80 +2318,79 @@ public final class CaptureOverlayService extends Service {
                 hsv.addView(pillsRow);
                 shelf.addView(hsv);
 
-                TextView chainTv = new TextView(this);
-                chainTv.setText(SolverEngine.formatLayersPlain(layers) + "▲");
-                chainTv.setTextColor(0xFFCBD5E1);
-                setScaledTextDp(chainTv, 7.5f);
-                chainTv.setSingleLine(true);
-                chainTv.setEllipsize(TextUtils.TruncateAt.MIDDLE);
-                chainTv.setPadding(0, sdp(1), 0, 0);
-                shelf.addView(chainTv);
-            } else {
-                TextView empTv = new TextView(this);
-                empTv.setText("слот пуст");
-                empTv.setTextColor(0xFF64748B);
-                setScaledTextDp(empTv, 8.0f);
-                empTv.setGravity(Gravity.CENTER);
-                shelf.addView(empTv);
             }
+
+            // Прогноз на ЭТУ стопку: значки как в пилюлях выше + мелкая надпись «прогноз»
+            // вместо текстовой подписи. Если рука в таблице новая — «прогноз —».
+            LinearLayout predLine = new LinearLayout(this);
+            predLine.setOrientation(LinearLayout.HORIZONTAL);
+            predLine.setGravity(Gravity.CENTER_VERTICAL);
+            predLine.setPadding(0, sdp(1), 0, 0);
+            List<SolverEngine.Layer> predStack = (predHand != null && predIdxForSlot[sid - 1] >= 0)
+                    ? predHand.get(predIdxForSlot[sid - 1]) : null;
+            if (predStack != null && !predStack.isEmpty()) {
+                for (SolverEngine.Layer lay : predStack) {
+                    if (lay == null) continue;
+                    LinearLayout pill = new LinearLayout(this);
+                    pill.setOrientation(LinearLayout.HORIZONTAL);
+                    pill.setGravity(Gravity.CENTER_VERTICAL);
+                    pill.setPadding(sdp(2), sdp(0.5f), sdp(2.5f), sdp(0.5f));
+                    pill.setBackground(roundedBg(getChipPillBg(lay.colour), getChipPillBorder(lay.colour), 0.8f, 4f));
+                    ImageView pic = new ImageView(this);
+                    pic.setImageResource(getChipDrawableId(lay.colour));
+                    LinearLayout.LayoutParams picLp = new LinearLayout.LayoutParams(sdp(9), sdp(8));
+                    picLp.rightMargin = sdp(1.5f);
+                    pill.addView(pic, picLp);
+                    TextView pcN = new TextView(this);
+                    pcN.setText("×" + lay.count);
+                    pcN.setTextColor(Color.WHITE);
+                    setScaledTextDp(pcN, 7.6f);
+                    pcN.setTypeface(Typeface.DEFAULT_BOLD);
+                    pill.addView(pcN);
+                    LinearLayout.LayoutParams plp = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                    plp.rightMargin = sdp(1.5f);
+                    predLine.addView(pill, plp);
+                }
+                TextView plbl = new TextView(this);
+                plbl.setText("прогноз");
+                plbl.setTextColor(0xFF64748B);
+                setScaledTextDp(plbl, 7.2f);
+                plbl.setTypeface(Typeface.DEFAULT_BOLD);
+                predLine.addView(plbl);
+            } else {
+                TextView pnone = new TextView(this);
+                pnone.setText("прогноз —");
+                pnone.setTextColor(0xFF475569);
+                setScaledTextDp(pnone, 7.5f);
+                predLine.addView(pnone);
+            }
+            shelf.addView(predLine);
             card.addView(shelf);
             cardsRow.addView(card);
         }
 
         host.addView(cardsRow);
 
-        // ⏱ Прогноз следующей руки (таблица, обученная на логах) — та же нотация, что у карточек
-        List<List<SolverEngine.Layer>> predHand = SolverEngine.getLastNextHandPredicted();
-        if (predHand != null && predHand.size() == 3) {
-            LinearLayout predRow = new LinearLayout(this);
-            predRow.setOrientation(LinearLayout.HORIZONTAL);
-            predRow.setGravity(Gravity.CENTER_VERTICAL);
-            LinearLayout.LayoutParams prLp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            prLp.topMargin = sdp(3);
-            predRow.setLayoutParams(prLp);
-
-            TextView predLbl = new TextView(this);
-            predLbl.setText("⏱ сл.рука:");
-            predLbl.setTextColor(0xFF93C5FD);
-            setScaledTextDp(predLbl, 8.6f);
-            predLbl.setTypeface(Typeface.DEFAULT_BOLD);
-            predRow.addView(predLbl);
-
-            for (int pi = 0; pi < 3; pi++) {
-                List<SolverEngine.Layer> pSlot = predHand.get(pi);
-                if (pSlot == null || pSlot.isEmpty()) continue;
-                if (pi > 0) {
-                    TextView sep = new TextView(this);
-                    sep.setText("·");
-                    sep.setTextColor(0xFF64748B);
-                    setScaledTextDp(sep, 8f);
-                    predRow.addView(sep);
-                }
-                ImageView pIc = new ImageView(this);
-                pIc.setImageResource(getChipDrawableId(pSlot.get(pSlot.size() - 1).colour));
-                LinearLayout.LayoutParams pIcLp = new LinearLayout.LayoutParams(sdp(11), sdp(10));
-                pIcLp.rightMargin = sdp(2);
-                predRow.addView(pIc, pIcLp);
-
-                TextView pTx = new TextView(this);
-                pTx.setText(SolverEngine.formatLayersPlain(pSlot) + "▲");
-                pTx.setTextColor(0xFFE2E8F0);
-                setScaledTextDp(pTx, 8.4f);
-                pTx.setTypeface(Typeface.DEFAULT_BOLD);
-                pTx.setSingleLine(true);
-                predRow.addView(pTx);
-            }
-            host.addView(predRow);
-        }
     }
 
-    /** Суффикс шапки: результат сверки прогноза при смене руки (N/3 ✓/⚠/✗). */
-    private String handPredSuffix() {
-        int pc = SolverEngine.getLastHandPredCheck();
-        if (pc < 0) return "";
-        String mark = (pc >= 3) ? " ✓" : (pc == 2 ? " ⚠" : " ✗");
-        return " · ⏱ прогноз " + pc + "/3" + mark;
+    /** Пересечение слоёв двух стопок (для сопоставления прогноза со стопками). */
+    private static int layerOverlap(List<SolverEngine.Layer> a, List<SolverEngine.Layer> b) {
+        if (a == null || b == null) return 0;
+        boolean[] used = new boolean[b.size()];
+        int sc = 0;
+        for (SolverEngine.Layer la : a) {
+            if (la == null) continue;
+            for (int i = 0; i < b.size(); i++) {
+                if (used[i] || b.get(i) == null) continue;
+                if (b.get(i).colour == la.colour && b.get(i).count == la.count) {
+                    used[i] = true;
+                    sc++;
+                    break;
+                }
+            }
+        }
+        return sc;
     }
 
     /**

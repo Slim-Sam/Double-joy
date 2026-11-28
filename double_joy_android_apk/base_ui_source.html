@@ -1417,7 +1417,6 @@ button, select, input, .hex-cell, .hand-slot {
           </div>
         </div>
         <div id="handGrid" class="hand-grid"></div>
-        <div id="predHandStrip" style="display:none; margin-top:8px; padding:7px 9px; background:#172136; border:1px solid #334155; border-radius:9px; font-size:12px; font-weight:700; color:#cbd5e1; align-items:center; gap:8px; flex-wrap:wrap;"></div>
       </div>
     </section>
 
@@ -5043,30 +5042,6 @@ const OfflineEngine = (() => {
       el.handGrid.appendChild(div);
     }
 
-    // 🔮 Прогноз следующей руки + сверка старого прогноза с текущей рукой — в этой же панели.
-    const strip = document.getElementById("predHandStrip");
-    if (strip) {
-      const ph = state.predHand;
-      if (ph && ph.length === 3) {
-        const stacks = ph.map((stk) => {
-          if (!stk || !stk.length) return `<span style="opacity:.45;">—</span>`;
-          const top = stk[stk.length - 1];
-          const uri = getGameChipUri(top.colour, state.iconStyle === "off");
-          const img = uri ? `<img src="${uri}" style="width:20px;height:20px;vertical-align:-4px;" alt="">` : colorChipHtml(top.colour, false);
-          return `<span style="display:inline-flex;align-items:center;gap:3px;background:#0d1220;border:1px solid #334155;border-radius:7px;padding:2px 6px;">${img}<b style="font-size:11.5px;">×${top.count}</b></span>`;
-        });
-        const chk = (typeof state.predCheckN === "number") ? state.predCheckN : -1;
-        const mark = chk >= 3 ? "✅" : (chk === 2 ? "⚠️" : (chk >= 0 ? "❌" : ""));
-        const matchTxt = chk >= 0
-          ? `⏱ Сверка: старый прогноз → рука <b style="color:#f8fafc;">${chk}/3</b> ${mark}`
-          : `⏱ Сверка появится после смены руки`;
-        strip.innerHTML = `<span style="color:#7dd3fc;">🔮 Сл. рука:</span> ${stacks.join(" ")}<span style="margin-left:auto;font-weight:600;color:#94a3b8;font-size:11.5px;">${matchTxt}</span>`;
-        strip.style.display = "flex";
-      } else {
-        strip.innerHTML = "";
-        strip.style.display = "none";
-      }
-    }
   }
 
   // --- ICON CUSTOMIZER ---
@@ -6690,8 +6665,8 @@ const OfflineEngine = (() => {
       appendLog({
         cat: "save",
         tag: "СТАРТ",
-        html: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Автосохранение включено.`,
-        plain: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Автосохранение включено.`,
+        html: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Версия (v1.0.39). Автосохранение включено.`,
+        plain: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Версия (v1.0.39). Автосохранение включено.`,
       });
     }
   }

@@ -1322,6 +1322,12 @@ public final class SolverEngine {
         String key = String.join(",", sigs);
         String next = handTransStage.get(stageNo + "|" + key);
         if (next == null) next = handTransGlobal.get(key);
+        if (next == null) {
+            // Нет точного совпадения — прогнозируем по ближайшей руке (≥2 из3 стопок),
+            // чтобы прогноз показывался и на руках, которых ещё не было в логах.
+            next = nearestNext(sigs, stageNo, true);
+            if (next == null) next = nearestNext(sigs, stageNo, false);
+        }
         if (next == null) return null;
         List<List<Layer>> out = new ArrayList<>(3);
         for (String slot : next.split(",")) {
@@ -1337,6 +1343,34 @@ public final class SolverEngine {
             if (!layers.isEmpty()) out.add(layers);
         }
         return out.size() == 3 ? out : null;
+    }
+
+    /** Ближайший переход: ≥2 из3 стопок совпадают (этапная таблица либо глобальная). */
+    private static String nearestNext(String[] sigs, int stageNo, boolean stageScoped) {
+        String prefix = stageNo + "|";
+        int max = 0;
+        String best = null;
+        for (Map.Entry<String, String> e : (stageScoped ? handTransStage : handTransGlobal).entrySet()) {
+            String k = e.getKey();
+            if (stageScoped) {
+                if (!k.startsWith(prefix)) continue;
+                k = k.substring(prefix.length());
+            }
+            int sc = sharedSlots(sigs, k.split(",", -1));
+            if (sc > max) { max = sc; best = e.getValue(); }
+        }
+        return (max >= 2 && best != null) ? best : null;
+    }
+
+    private static int sharedSlots(String[] a, String[] b) {
+        boolean[] used = new boolean[b.length];
+        int sc = 0;
+        for (String x : a) {
+            for (int i = 0; i < b.length; i++) {
+                if (!used[i] && b[i].equals(x)) { used[i] = true; sc++; break; }
+            }
+        }
+        return sc;
     }
 
     /**
@@ -1701,8 +1735,10 @@ public final class SolverEngine {
             if (handChanged) {
                 sPredCheck = (sNextHandPredicted != null)
                         ? matchCount(sNextHandPredicted, handToSlots(validHand)) : -1;
+                sPredSlotMatch = computeSlotMatches(sNextHandPredicted, handToSlots(validHand));
             } else if (sNextHandPredicted == null) {
                 sPredCheck = -1;
+                sPredSlotMatch = null;
             }
             sNextHandPredicted = predNextHand;
             if (curSig != null) sPrevHandSig = curSig;
@@ -2501,6 +2537,8 @@ public final class SolverEngine {
     private static List<List<Layer>> sNextHandPredicted;
     private static String sPrevHandSig;
     private static int sPredCheck = -1;
+    /** Совпадение прогноза ПО КАЖДОЙ стопке (индексы0..2 = слоты1..3); null — сверки ещё не было. */
+    private static boolean[] sPredSlotMatch;
 
     private static String slotSig(List<Layer> layers) {
         if (layers == null || layers.isEmpty()) return "";
@@ -2553,6 +2591,23 @@ public final class SolverEngine {
         return matched;
     }
 
+    /** Какие стопки ТОЧНО совпали с прогнозом (по одной, без повторов). */
+    private static boolean[] computeSlotMatches(List<List<Layer>> pred, List<List<Layer>> actual) {
+        if (pred == null || actual == null || pred.size() != actual.size()) return null;
+        boolean[] used = new boolean[pred.size()];
+        boolean[] res = new boolean[actual.size()];
+        for (int i = 0; i < actual.size(); i++) {
+            String aSig = slotSig(actual.get(i));
+            if (aSig == null || aSig.isEmpty()) { res[i] = false; continue; }
+            for (int j = 0; j < pred.size(); j++) {
+                if (used[j]) continue;
+                String pSig = slotSig(pred.get(j));
+                if (aSig != null && aSig.equals(pSig)) { used[j] = true; res[i] = true; break; }
+            }
+        }
+        return res;
+    }
+
     /** Проверка прогноза на момент СКАНА руки (лог): если рука уже сменилась — сверяем сразу. */
     public static int peekPredCheckForWaits(Map<Integer, List<Layer>> waits) {
         synchronized (SolverEngine.class) {
@@ -2575,6 +2630,11 @@ public final class SolverEngine {
 
     public static int getLastHandPredCheck() {
         synchronized (SolverEngine.class) { return sPredCheck; }
+    }
+
+    /** Совпадение последнего прогноза по стопкам: boolean[3] (слоты1..3) либо null, если сверки не было. */
+    public static boolean[] getLastPredSlotMatch() {
+        synchronized (SolverEngine.class) { return sPredSlotMatch; }
     }
 
     // ===================== ДЕТЕКТОР ПАНЕЛИ БУСТЕРОВ =====================
