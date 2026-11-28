@@ -1413,10 +1413,15 @@ public final class SolverEngine {
                 if (cs >= targetScore) break;
                 Map<Integer, List<Layer>> waits = new HashMap<>();
                 for (int i = 0; i < hand.size() && i < 3; i++) waits.put(i + 1, hand.get(i));
-                List<SolvePlan> plays = solveTopPlans(cb, waits, cs, targetScore, "fast", 2, stageNo, false);
+                // Модель играет БЕЗ ошибок (всегда лучший план) и как survival при пусто≤5 —
+                // так % отвечает на вопрос «сколько шансов, если строго следовать плану»
+                // (осознанные ошибки в симуляции занижали оценку:15% против50%).
+                int emp = 0;
+                for (CellState c : cb) if (c != null && c.isEmptyPlaceable()) emp++;
+                List<SolvePlan> plays = solveTopPlans(cb, waits, cs, targetScore,
+                        emp <= 5 ? "survival" : "fast", 2, stageNo, false);
                 if (plays == null || plays.isEmpty()) { dead = true; break; }
-                // Небольшой разброс: иногда берём 2-й план — моделируем «не идеально».
-                SolvePlan pick = (plays.size() > 1 && rng.nextInt(100) < 35) ? plays.get(1) : plays.get(0);
+                SolvePlan pick = plays.get(0);
                 if (pick.steps == null || pick.steps.isEmpty()) { dead = true; break; }
                 for (StepMove sm : pick.steps) {
                     SimResult sr = simulatePlaceCard(cb, sm.cardLayers, sm.targetCellId, cs);
