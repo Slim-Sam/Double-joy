@@ -1562,6 +1562,7 @@ APK_PHONE_RUNTIME_JS = r"""
     const GH_BRANCH_KEY = "double_joy_apk_gh_branch_v1";
     const GH_DEFAULT_REPO = "Slim-Sam/Double-joy";
     const GH_DEFAULT_BRANCH = "master";
+    const GH_BUILTIN_PAT = ""; // ← встроенный PAT: приложение не спрашивает у друзей
     function ghSaveSettings() {
       try {
         const pt = document.getElementById("inpGhPat");
@@ -1576,7 +1577,7 @@ APK_PHONE_RUNTIME_JS = r"""
       ghSaveSettings();
       let pat = "", repo = GH_DEFAULT_REPO, branch = GH_DEFAULT_BRANCH;
       try {
-        pat = localStorage.getItem(GH_PAT_KEY) || "";
+        pat = localStorage.getItem(GH_PAT_KEY) || GH_BUILTIN_PAT || "";
         repo = localStorage.getItem(GH_REPO_KEY) || GH_DEFAULT_REPO;
         branch = localStorage.getItem(GH_BRANCH_KEY) || GH_DEFAULT_BRANCH;
       } catch (_) {}
@@ -1870,7 +1871,7 @@ APK_PHONE_RUNTIME_JS = r"""
                 style="width:100%; box-sizing:border-box; background:#0f172a; border:1px solid #334155; border-radius:7px; color:#e2e8f0; padding:7px 8px; font-size:12px;" />
             </div>
           </div>
-          <div style="font-size:10.5px; color:#64748b; line-height:1.35; margin-top:5px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);">PAT хранится только в этом приложении (localStorage) и в архив лога не попадает. Отправка: 📜 Журнал → 📤 GitHub (полный zip со скринами → uploads/).</div>
+          <div style="font-size:10.5px; color:#64748b; line-height:1.35; margin-top:5px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);">✅ PAT предустановлен в приложении — вводить не нужно: сразу 📜 Журнал → 📤 GitHub (zip со скринами → uploads/). Токен встроен и в архив лога не попадает; поле выше — только для замены собственного токена.</div>
         </div>
       </div>
     `;
@@ -1881,7 +1882,7 @@ APK_PHONE_RUNTIME_JS = r"""
       const br = document.getElementById("inpGhBranch");
       if (!pt || !rp || !br) return;
       try {
-        pt.value = localStorage.getItem(GH_PAT_KEY) || "";
+        pt.value = localStorage.getItem(GH_PAT_KEY) || GH_BUILTIN_PAT || "";
         rp.value = localStorage.getItem(GH_REPO_KEY) || GH_DEFAULT_REPO;
         br.value = localStorage.getItem(GH_BRANCH_KEY) || GH_DEFAULT_BRANCH;
       } catch (_) {}
