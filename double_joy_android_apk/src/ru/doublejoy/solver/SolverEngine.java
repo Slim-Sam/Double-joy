@@ -1392,7 +1392,11 @@ public final class SolverEngine {
         CellState[] start = plan.steps.get(plan.steps.size() - 1).boardAfter;
         int sScore = plan.finalScore;
         if (sScore >= targetScore) return 100;
-        final int LINES = 6, MAX_HANDS = 35;
+        final int LINES = 6;
+        // Сколько рук нужно добраться до цели с запасом (средний прирост ~10/руку).
+        // Прежний жёсткий лимит35 рук не хватал для больших целей (этап12:600 → всегда0%).
+        int needHands = (targetScore - sScore + 9) / 10 + 8;
+        final int MAX_HANDS = Math.max(35, Math.min(90, needHands));
         int wins = 0;
         for (int li = 0; li < LINES; li++) {
             // Детерминированный «рандом» на линию: линии играют по-разному,
