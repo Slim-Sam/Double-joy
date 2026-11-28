@@ -3741,6 +3741,9 @@ def main() -> None:
           const ph = document.getElementById("apkPredHandVal");
           if (ph) ph.textContent = (obj.predHandText && String(obj.predHandText).length) ? obj.predHandText : "—";
         }
+        // 🔮 Значки прогноза + сверка — в панели состава руки (predHandStrip).
+        if (obj.predHand !== undefined) state.predHand = obj.predHand;
+        if (obj.predCheckN !== undefined) state.predCheckN = obj.predCheckN;
         window.apkJustChangedStage = true;
         if (Array.isArray(obj.logEntries) && obj.logEntries.length > 0) {
           for (const le of obj.logEntries) {

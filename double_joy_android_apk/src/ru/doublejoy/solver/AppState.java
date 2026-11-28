@@ -571,6 +571,27 @@ public final class AppState {
             payload.put("mode", mode);
             payload.put("passProbPct", lastPassProbPct);
             payload.put("predHandText", lastPredHandText != null ? lastPredHandText : "");
+            // Значки прогноза для панели руки: [[{colour,count}...], x3] + результат сверки (N/3, -1 = нет).
+            try {
+                java.util.List<java.util.List<SolverEngine.Layer>> ph = SolverEngine.getLastNextHandPredicted();
+                org.json.JSONArray phArr = new org.json.JSONArray();
+                if (ph != null) {
+                    for (java.util.List<SolverEngine.Layer> stk : ph) {
+                        org.json.JSONArray sj = new org.json.JSONArray();
+                        if (stk != null) {
+                            for (SolverEngine.Layer lyr : stk) {
+                                org.json.JSONObject lj = new org.json.JSONObject();
+                                lj.put("colour", lyr.colour);
+                                lj.put("count", lyr.count);
+                                sj.put(lj);
+                            }
+                        }
+                        phArr.put(sj);
+                    }
+                }
+                payload.put("predHand", phArr);
+                payload.put("predCheckN", SolverEngine.getLastHandPredCheck());
+            } catch (Exception ignored) {}
 
             if (pendingDiffResult != null) {
                 payload.put("pendingDiff", SolverEngine.boardDiffToJson(pendingDiffResult));
