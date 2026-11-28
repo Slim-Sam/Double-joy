@@ -125,6 +125,8 @@ public class LevelEmulator {
         return hand.size() == 3 ? hand : null;
     }
 
+    static boolean lastNextHandFromTable = false; // откуда пришла последняя рука (для EMU_HAND_SRC)
+
     static List<List<SolverEngine.Layer>> nextHand(int stageNo, List<List<SolverEngine.Layer>> cur, int round) throws Exception {
         String key = handKey(cur);
         if (key != null) {
@@ -132,9 +134,10 @@ public class LevelEmulator {
             if (nxt == null) nxt = globalTable.get(key);
             if (nxt != null) {
                 List<List<SolverEngine.Layer>> h = parseHand(nxt);
-                if (h != null) return h;
+                if (h != null) { lastNextHandFromTable = true; return h; }
             }
         }
+        lastNextHandFromTable = false;
         // fallback: синтетика по прогрессу счёта (как в прокатке движка)
         List<List<SolverEngine.Layer>> syn = synthetic(round, cur == null ? 0 : -1);
         return syn;
@@ -364,16 +367,18 @@ public class LevelEmulator {
         // Этап8, лог 20261127: #54 «Хлёб×6·Клён×5·Жёлудь×6» = 2_5|,5_6|,7_6|
         // (ключ есть в STAGE_TABLE, продолжение — реальная цепочка рук).
         String realStart = REAL_START.get(stg.stageNo);
+        String initSrc = "S";
         if (realStart != null) {
             List<List<SolverEngine.Layer>> rh = parseHand(realStart);
-            if (rh != null) hand = rh;
+            if (rh != null) { hand = rh; initSrc = "REAL"; }
         } else if (TABLE_FALLBACK_STAGES.contains(stg.stageNo)) {
             String tk = tableChainStart(stg.stageNo);
             if (tk != null) {
                 List<List<SolverEngine.Layer>> th = parseHand(tk);
-                if (th != null) hand = th;
+                if (th != null) { hand = th; initSrc = "T"; }
             }
         }
+        if (System.getenv("EMU_HAND_SRC") != null) System.out.println("[HS]INIT:" + initSrc);
         int rerolls = 0, hammers = 0, stepsDone = 0;
 
         while (res.hands < maxHands) {
@@ -484,6 +489,8 @@ public class LevelEmulator {
                 rerolls++;
             }
             hand = nextHand(stg.stageNo, hand, ++round);
+            if (System.getenv("EMU_HAND_SRC") != null)
+                System.out.println("[HS]" + (lastNextHandFromTable ? "T" : "S"));
         }
 
         res.status = "TIMEOUT"; res.score = score; res.rerolls = rerolls; res.hammers = hammers; res.steps = stepsDone;
