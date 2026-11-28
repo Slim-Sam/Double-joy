@@ -1348,9 +1348,12 @@ public final class SolverEngine {
         List<List<List<Layer>>> suite = (prog < 0.35) ? ROLLOUT_EARLY : (prog < 0.78 ? ROLLOUT_MID : ROLLOUT_LATE);
         // Точное предсказание следующей руки из логов идёт ПЕРЕД синтетической выборкой:
         // если переход известен — прокатка играет реальную будущую руку, а не модельную.
-        List<List<List<Layer>>> handsToPlay = new ArrayList<>(suite.size() + 1);
+        List<List<List<Layer>>> handsToPlay = new ArrayList<>(suite.size() + 4);
         if (predictedNextHand != null && predictedNextHand.size() == 3) {
-            handsToPlay.add(predictedNextHand);
+            // Реальная следующая рука (таблица переходов, ~98% точность) должна
+            // весить больше синтетики: раньше она входила1 раз из17 и взгляд
+            // вперёд фактически решал сьют. Играем её4 раза из20.
+            for (int pw = 0; pw < 4; pw++) handsToPlay.add(predictedNextHand);
         }
         handsToPlay.addAll(suite);
         int nHands = handsToPlay.size();

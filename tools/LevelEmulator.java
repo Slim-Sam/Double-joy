@@ -9,9 +9,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Эмулятор уровней (headless): проходит этапы НА МОДЕЛИ игры — без телефона.
@@ -45,6 +47,29 @@ public class LevelEmulator {
     // ---------- руки: цепочка из обученной таблицы ----------
     static Map<String, String> stageTable = new HashMap<>();
     static Map<String, String> globalTable = new HashMap<>();
+    // Стартовые руки этапов, взятые из реальных логов (см. playStage).
+    static final Map<Integer, String> REAL_START = new HashMap<>();
+    static {
+        REAL_START.put(8, "2_5|,5_6|,7_6|");  // Этап8: Хлёб×6·Клён×5·Жёлудь×6 (#54)
+        // Этапы11,12 пробовались с логовыми стартами — цепочки оказались хуже
+        // (11:276), переведены на TABLE_FALLBACK_STAGES (первая цепочка таблицы).
+    }
+    // Этапы без логов (нет ни реального старта, ни своих переходов): стартуем с
+    // ПЕРВОЙ (сортированной) реальной руки таблицы переходов — партия идёт по
+    // настоящей цепочке рук вместо цикла синтетического сьюта. Этапы9 и10 НЕ
+    // трогаем: они проходят на текущей синтетике.
+    static final Set<Integer> TABLE_FALLBACK_STAGES = new HashSet<>(java.util.Arrays.asList(11, 12, 13, 14, 15, 16));
+
+    static String tableChainStart(int stageNo) {
+        String prefix = stageNo + "|";
+        java.util.TreeSet<String> stageKeys = new java.util.TreeSet<>();
+        for (String k : stageTable.keySet()) {
+            if (k.startsWith(prefix)) stageKeys.add(k.substring(prefix.length()));
+        }
+        if (!stageKeys.isEmpty()) return stageKeys.first();
+        java.util.TreeSet<String> glob = new java.util.TreeSet<>(globalTable.keySet());
+        return glob.isEmpty() ? null : glob.first();
+    }
 
     static void loadTransitions() {
         for (String l : HandTransitionsData.STAGE_TABLE.split("\n")) {
@@ -322,7 +347,29 @@ public class LevelEmulator {
         SolverEngine.CellState[] board = SolverEngine.createStageBoard(stg, 0);
         int score = 0;
         int round = 0;
+        // Сброс бакета синтетики: первая рука этапа всегда при счёте0 (prog=0 →
+        // «ранний» бакет). Без сброса здесь оставался бакет ПРЕДЫДУЩЕГО этапа:
+        // после пройденного Этап8 (prog≈1.0) Этап9 стартовал «поздней» рукой и
+        // в полном прогоне умирал на101/550 вместо560/550.
+        synthBracket = 0;
         List<List<SolverEngine.Layer>> hand = synthetic(0, -1);
+        // Реальная стартовая рука этапа из логов (uploads/прочитано): без неё
+        // стартовая синтетика не находится в таблице переходов и ВСЯ партия идёт
+        // по циклическому сьюту (пачки ×1-×4) — этап8 так умирал на 88/500,
+        // тогда как в реальной игре с такими же решалками игроки брали 404-469.
+        // Этап8, лог 20261127: #54 «Хлёб×6·Клён×5·Жёлудь×6» = 2_5|,5_6|,7_6|
+        // (ключ есть в STAGE_TABLE, продолжение — реальная цепочка рук).
+        String realStart = REAL_START.get(stg.stageNo);
+        if (realStart != null) {
+            List<List<SolverEngine.Layer>> rh = parseHand(realStart);
+            if (rh != null) hand = rh;
+        } else if (TABLE_FALLBACK_STAGES.contains(stg.stageNo)) {
+            String tk = tableChainStart(stg.stageNo);
+            if (tk != null) {
+                List<List<SolverEngine.Layer>> th = parseHand(tk);
+                if (th != null) hand = th;
+            }
+        }
         int rerolls = 0, hammers = 0, stepsDone = 0;
 
         while (res.hands < maxHands) {
