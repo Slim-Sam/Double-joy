@@ -50,7 +50,7 @@ def main():
     )
     tag = f"v{version}"
     title = f"Двойная радость {version}"
-    asset_name = f"Двойная_радость_{version}.apk"
+    asset_name = f"Double-joy_{version}.apk"  # GitHub нормализует кириллицу
 
     with open(apk, "rb") as f:
         apk_bytes = f.read()
