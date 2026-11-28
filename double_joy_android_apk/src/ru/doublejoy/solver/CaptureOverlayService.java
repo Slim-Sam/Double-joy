@@ -1362,7 +1362,9 @@ public final class CaptureOverlayService extends Service {
                         if (st.cells[cid] != null && st.cells[cid].isEmptyPlaceable()) emptyPlaceableNow++;
                     }
                     String effectiveMode = st.mode != null ? st.mode : "balanced";
-                    if ("balanced".equals(effectiveMode) && emptyPlaceableNow <= 5) {
+                    // Любым режимом (в т.ч. deep) на малом числе пустых клеток считаем
+                    // как survival: лог222522 — deep при Пусто1-4 вигрызал поле до тупика.
+                    if (!"survival".equals(effectiveMode) && emptyPlaceableNow <= 5) {
                         effectiveMode = "survival";
                     }
                     st.lastPlan = SolverEngine.solveBestPlan(
@@ -2039,6 +2041,12 @@ public final class CaptureOverlayService extends Service {
                     + ((plan.recommendReroll && rerollOk) ? " или 🔄" : "")
                     + " · Итог " + plan.finalScore);
             lblMini.setTextColor(0xFFE9D5FF);
+        } else if (plan != null && !plan.steps.isEmpty() && plan.finalEmptyCells <= 2) {
+            // Раннее предупреждение (лог222522): при Пусто1-2 обычные планы вели к смерти поля.
+            lblMini.setText("⚠ Пусто " + plan.finalEmptyCells + "! Береги пустые клетки"
+                    + (rerollOk ? " · держи 🔄" : "")
+                    + " · Итог " + plan.finalScore);
+            lblMini.setTextColor(0xFFFDE047);
         } else if (plan != null && !plan.steps.isEmpty() && plan.recommendReroll) {
             lblMini.setText("⚠ Тупик (пусто " + plan.finalEmptyCells + ")! "
                     + (rerollOk ? "Совет: 🔄 Перемешать" : "бустеров нет")
