@@ -1437,7 +1437,9 @@ public final class CaptureOverlayService extends Service {
                     st.setBoosters(vo.boostHammer, vo.boostMove, vo.boostRefresh);
                     List<List<SolverEngine.Layer>> predH = SolverEngine.getLastNextHandPredicted();
                     if (predH != null && predH.size() == 3) {
-                        logSubs.add("⏱ Прогноз сл.руки: ⬅" + SolverEngine.formatLayersPlain(predH.get(0))
+                        logSubs.add("⏱ Прогноз сл.руки"
+                                + (SolverEngine.getLastPredIsNear() ? " (по похожей руке)" : "")
+                                + ": ⬅" + SolverEngine.formatLayersPlain(predH.get(0))
                                 + " · ⬆" + SolverEngine.formatLayersPlain(predH.get(1))
                                 + " · ➡" + SolverEngine.formatLayersPlain(predH.get(2)));
                     }
@@ -2361,7 +2363,8 @@ public final class CaptureOverlayService extends Service {
                     predLine.addView(pill, plp);
                 }
                 TextView plbl = new TextView(this);
-                plbl.setText("прогноз");
+                // «≈» — прогноз по похожей руке (не точный), сверка на него НЕ распространяется.
+                plbl.setText(SolverEngine.getLastPredIsNear() ? "прогноз ≈" : "прогноз");
                 plbl.setTextColor(0xFF64748B);
                 setScaledTextDp(plbl, 7.2f);
                 plbl.setTypeface(Typeface.DEFAULT_BOLD);

@@ -1322,13 +1322,16 @@ public final class SolverEngine {
         String key = String.join(",", sigs);
         String next = handTransStage.get(stageNo + "|" + key);
         if (next == null) next = handTransGlobal.get(key);
+        boolean wasNear = false;
         if (next == null) {
             // Нет точного совпадения — прогнозируем по ближайшей руке (≥2 из3 стопок),
             // чтобы прогноз показывался и на руках, которых ещё не было в логах.
             next = nearestNext(sigs, stageNo, true);
             if (next == null) next = nearestNext(sigs, stageNo, false);
+            wasNear = (next != null);
         }
-        if (next == null) return null;
+        if (next == null) { sNextCallNear = false; return null; }
+        sNextCallNear = wasNear;
         List<List<Layer>> out = new ArrayList<>(3);
         for (String slot : next.split(",")) {
             List<Layer> layers = new ArrayList<>();
@@ -1733,14 +1736,18 @@ public final class SolverEngine {
             String curSig = slotsSig(handToSlots(validHand));
             boolean handChanged = (sPrevHandSig != null && curSig != null && !sPrevHandSig.equals(curSig));
             if (handChanged) {
-                sPredCheck = (sNextHandPredicted != null)
+                // Сверку ведём ТОЛЬКО для точных прогнозов: «по похожей руке» не претендует
+                // на точность — показывать ✗ на нём было бы ложью (лог232144:0/3 на near).
+                sPredCheck = (sNextHandPredicted != null && !sPredIsNear)
                         ? matchCount(sNextHandPredicted, handToSlots(validHand)) : -1;
-                sPredSlotMatch = computeSlotMatches(sNextHandPredicted, handToSlots(validHand));
+                sPredSlotMatch = (sNextHandPredicted != null && !sPredIsNear)
+                        ? computeSlotMatches(sNextHandPredicted, handToSlots(validHand)) : null;
             } else if (sNextHandPredicted == null) {
                 sPredCheck = -1;
                 sPredSlotMatch = null;
             }
             sNextHandPredicted = predNextHand;
+            sPredIsNear = (predNextHand != null) && sNextCallNear;
             if (curSig != null) sPrevHandSig = curSig;
         }
 
@@ -2537,8 +2544,12 @@ public final class SolverEngine {
     private static List<List<Layer>> sNextHandPredicted;
     private static String sPrevHandSig;
     private static int sPredCheck = -1;
-    /** Совпадение прогноза ПО КАЖДОЙ стопке (индексы0..2 = слоты1..3); null — сверки ещё не было. */
+    /** Совпадение последнего прогноза ПО КАЖДОЙ стопке (индексы0..2 = слоты1..3); null — сверки не было. */
     private static boolean[] sPredSlotMatch;
+    /** Последнее предсказание — «по похожей руке» (≥2/3), а не точное из таблицы? */
+    private static boolean sPredIsNear;
+    /** Флаг вызова predictNextHand (точный / ближайший / промах). */
+    private static boolean sNextCallNear;
 
     private static String slotSig(List<Layer> layers) {
         if (layers == null || layers.isEmpty()) return "";
@@ -2635,6 +2646,11 @@ public final class SolverEngine {
     /** Совпадение последнего прогноза по стопкам: boolean[3] (слоты1..3) либо null, если сверки не было. */
     public static boolean[] getLastPredSlotMatch() {
         synchronized (SolverEngine.class) { return sPredSlotMatch; }
+    }
+
+    /** Последний прогноз — «по похожей руке» (не точный из таблицы)? */
+    public static boolean getLastPredIsNear() {
+        synchronized (SolverEngine.class) { return sPredIsNear; }
     }
 
     // ===================== ДЕТЕКТОР ПАНЕЛИ БУСТЕРОВ =====================
