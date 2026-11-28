@@ -1820,7 +1820,7 @@ APK_PHONE_RUNTIME_JS = r"""
         <div class="apk-sheet-handle"></div>
       </div>
       <div class="apk-modal-hdr" style="padding-top:2px;">
-        <div class="apk-modal-title">💾 Сейвы и настройки (v1.0.40)</div>
+        <div class="apk-modal-title">💾 Сейвы и настройки (v1.0.41)</div>
         <button type="button" data-close-sheet="1" style="padding:4px 10px; font-size:12px;">✕ Закрыть</button>
       </div>
       <div class="apk-modal-body" id="apkMenuModalBody">
@@ -2054,7 +2054,7 @@ APK_PHONE_RUNTIME_JS = r"""
       </div>
       <div class="apk-modal-body" id="apkCrestModalBody" style="display:flex; flex-direction:column; align-items:center; text-align:center;">
         <img src="${window.APK_SUD_CREST_URI}" style="width:min(90vw, 430px); height:auto; border-radius:14px; border:1.5px solid rgba(217,119,6,0.65); box-shadow:0 8px 28px rgba(0,0,0,0.75);" alt="[SUD] Suicide Squad — Двойная радость!" />
-        <div style="margin-top:10px; font-size:12.5px; color:#fde68a; font-weight:800;">Специальное издание для клана [SUD] Suicide Squad (v1.0.40)</div>
+        <div style="margin-top:10px; font-size:12.5px; color:#fde68a; font-weight:800;">Специальное издание для клана [SUD] Suicide Squad (v1.0.41)</div>
       </div>
     `;
     document.body.appendChild(crestModal);
@@ -3780,8 +3780,8 @@ def main() -> None:
     old_init_end = """      appendLog({
         cat: "save",
         tag: "СТАРТ",
-        html: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Версия (v1.0.40). Автосохранение включено.`,
-        plain: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Версия (v1.0.40). Автосохранение включено.`,
+        html: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Версия (v1.0.41). Автосохранение включено.`,
+        plain: `Сессия запущена (Этап ${state.stageNo}, Счёт ${state.curScore}). Версия (v1.0.41). Автосохранение включено.`,
       });
     }
   }"""
