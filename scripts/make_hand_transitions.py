@@ -32,7 +32,16 @@ def hand_key(slots_text):
 
 def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    files = sorted(glob.glob(f"{root}/uploads/прочитано/Лог_*.txt")) + sorted(glob.glob(f"{root}/uploads/Лог_*.txt"))
+    # Способ БЕЗ выкачки логов в git: положи свежие логи-зипы в отдельный каталог
+    # (например /tmp/newlogs, скачать можно через GitHub API) и укажи его:
+    #   python3 scripts/make_hand_transitions.py /tmp/newlogs
+    # Таблица ПРИСОЕДИНЯЕТСЯ к уже накопленной (существующие переходы сохраняются).
+    extra_dirs = [a for a in sys.argv[1:]]
+    files = []
+    for d in extra_dirs:
+        files += sorted(glob.glob(os.path.join(d, "*.txt")))
+    if not files:
+        files = sorted(glob.glob(f"{root}/uploads/прочитано/Лог_*.txt")) + sorted(glob.glob(f"{root}/uploads/Лог_*.txt"))
     seen = set(); uniq = []
     for f in files:
         b = os.path.basename(f)
@@ -66,6 +75,25 @@ def main():
             if hands[i+1][0] != st: continue
             by_stage[st][k][hands[i+1][1]] += 1
             global_t[k][hands[i+1][1]] += 1
+    # --- слияние с уже накопленной таблицей (не теряем историю) ---
+    out_path = os.path.join(root, "double_joy_android_apk/src/ru/doublejoy/solver/HandTransitionsData.java")
+    if os.path.exists(out_path):
+        import re as _re
+        cur = open(out_path, encoding="utf-8").read()
+        m_st = _re.search(r'STAGE_TABLE =\s*"([^"]*)"', cur, _re.S)
+        if m_st:
+            for line in m_st.group(1).split("\\n"):
+                if not line.strip(): continue
+                pr = line.split(";", 2)
+                if len(pr) == 3 and pr[1] not in by_stage[int(pr[0])]:
+                    by_stage[int(pr[0])][pr[1]][pr[2]] += 1000  # вес истории
+        m_gl = _re.search(r'GLOBAL_TABLE =\s*"([^"]*)"', cur, _re.S)
+        if m_gl:
+            for line in m_gl.group(1).split("\\n"):
+                if not line.strip(): continue
+                pr = line.split(";", 2) if line.count(";") == 2 else line.split(";", 1)
+                if len(pr) == 2 and pr[0] not in global_t:
+                    global_t[pr[0]][pr[1]] += 1000
     stage_rows = []
     for st in sorted(by_stage):
         for k in sorted(by_stage[st]):
