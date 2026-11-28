@@ -1368,6 +1368,19 @@ public final class CaptureOverlayService extends Service {
                     st.lastPlan = SolverEngine.solveBestPlan(
                             st.cells, st.waits, st.curScore, stg.targetScore, effectiveMode, st.stageNo, st.justScannedStage
                     );
+                    // Прогноз следующей руки — обновляется при каждом расчёте (все режимы).
+                    st.lastPredHandText = (st.lastPlan != null && st.lastPlan.predictedHandText != null)
+                            ? st.lastPlan.predictedHandText : "";
+                    // Шанс прохождения (%) — СЧИТАЕТСЯ ТОЛЬКО по «⏩ Шаг+Рука», без подсказок.
+                    if (advancePrevPlanFirst) {
+                        List<List<SolverEngine.Layer>> handNow = new ArrayList<>(3);
+                        for (int slot = 1; slot <= 3; slot++) {
+                            List<SolverEngine.Layer> sl = st.waits.get(slot);
+                            if (sl != null) handNow.add(sl);
+                        }
+                        st.lastPassProbPct = SolverEngine.estimatePassProbability(
+                                st.lastPlan, handNow, st.curScore, stg.targetScore, st.stageNo);
+                    }
                     if (!advancePrevPlanFirst) {
                         st.pushCausalHistoryStep(SolverEngine.CausalHistoryStep.fromVision(
                                 (int) st.stateSeq, "РУКА", st.curScore, st.curScore, vo.detectedScore,

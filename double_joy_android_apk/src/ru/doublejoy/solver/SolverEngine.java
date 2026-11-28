@@ -222,6 +222,9 @@ public final class SolverEngine {
         public boolean recommendReroll;
         public boolean partialBeforeReroll = false;
         public boolean deadlockStopAll = false;
+        /** Прогноз следующей руки из таблицы переходов — считается в ЛЮБОМ режиме. */
+        public String predictedHandText = "";
+        public List<List<Layer>> predictedNextHand = null;
         public String rerollReason = "";
         public int hammerCellId = 0;
         public String hammerReasonRu = "";
@@ -1336,6 +1339,77 @@ public final class SolverEngine {
         return out.size() == 3 ? out : null;
     }
 
+    /**
+     * Шанс пройти этап БЕЗ игровых подсказок (бюджеты бустеров =0): серия
+     * детерминированных прокаток с доски после плана. Политика каждой руки —
+     * тот же поиск solveTopPlans (режим fast, дёшево), что и в реальной игре;
+     * разнообразие линий — случайный выбор 1-го/2-го плана и сдвиг синтетической
+     * цепочки рук. Первая рука прокатки — предсказанная таблицей переходов.
+     * Вызывается по кнопке «⏩ Шаг+Рука»; никакие подсказки не моделируются.
+     */
+    public static int estimatePassProbability(SolvePlan plan, List<List<Layer>> currentHand,
+            int curScore, int targetScore, int stageNo) {
+        if (plan == null || targetScore <= 0) return -1;
+        if (plan.isWin || plan.finalScore >= targetScore) return 100;
+        if (plan.deadlockStopAll || plan.steps.isEmpty()) return 0;
+        CellState[] start = plan.steps.get(plan.steps.size() - 1).boardAfter;
+        int sScore = plan.finalScore;
+        if (sScore >= targetScore) return 100;
+        final int LINES = 6, MAX_HANDS = 35;
+        int wins = 0;
+        for (int li = 0; li < LINES; li++) {
+            // Детерминированный «рандом» на линию: линии играют по-разному,
+            // но повторный вызов с теми же данными даёт тот же процент.
+            java.util.Random rng = new java.util.Random(777001L + li * 104729L);
+            CellState[] cb = cloneBoard(start);
+            int cs = sScore;
+            List<List<Layer>> hand = plan.predictedNextHand;
+            if (hand == null || hand.size() < 3) {
+                hand = rolloutNextHand(stageNo, currentHand, 0, cs, targetScore);
+            }
+            boolean dead = false;
+            for (int h = 0; h < MAX_HANDS; h++) {
+                if (cs >= targetScore) break;
+                Map<Integer, List<Layer>> waits = new HashMap<>();
+                for (int i = 0; i < hand.size() && i < 3; i++) waits.put(i + 1, hand.get(i));
+                List<SolvePlan> plays = solveTopPlans(cb, waits, cs, targetScore, "fast", 2, stageNo, false);
+                if (plays == null || plays.isEmpty()) { dead = true; break; }
+                // Небольшой разброс: иногда берём 2-й план — моделируем «не идеально».
+                SolvePlan pick = (plays.size() > 1 && rng.nextInt(100) < 35) ? plays.get(1) : plays.get(0);
+                if (pick.steps == null || pick.steps.isEmpty()) { dead = true; break; }
+                for (StepMove sm : pick.steps) {
+                    SimResult sr = simulatePlaceCard(cb, sm.cardLayers, sm.targetCellId, cs);
+                    if (!sr.valid) { dead = true; break; }
+                    cb = sr.newCells;
+                    cs = sr.finalScore;
+                }
+                if (dead || cs >= targetScore) break;
+                hand = rolloutNextHand(stageNo, hand, h + 1 + li * 5, cs, targetScore);
+            }
+            if (!dead && cs >= targetScore) wins++;
+        }
+        return (int) Math.round(100.0 * wins / LINES);
+    }
+
+    /** Следующая рука прокатки: таблица переходов (логи) → синтетика по прогрессу счёта. */
+    private static List<List<Layer>> rolloutNextHand(int stageNo, List<List<Layer>> cur, int round, int score, int targetScore) {
+        if (cur != null && !cur.isEmpty()) {
+            List<HandItem> items = new ArrayList<>(cur.size());
+            for (int i = 0; i < cur.size(); i++) {
+                HandItem hi = new HandItem();
+                hi.slotId = i + 1;
+                hi.layers = cur.get(i);
+                items.add(hi);
+            }
+            List<List<Layer>> nxt = predictNextHand(stageNo, items);
+            if (nxt != null) return nxt;
+        }
+        double prog = targetScore > 0 ? (double) score / targetScore : 0.5;
+        List<List<List<Layer>>> suite = prog < 0.35 ? ROLLOUT_EARLY
+                : (prog < 0.78 ? ROLLOUT_MID : ROLLOUT_LATE);
+        return suite.get(round % suite.size());
+    }
+
     private static double evaluateRolloutLookahead(CellState[] leafCells, int[][] hexDist, double staticEval, int leafScore, int targetScore, String mode, List<List<Layer>> predictedNextHand) {
         int initEmp = 0;
         for (int cid = 1; cid <= MAX_POS_COUNT; cid++) {
@@ -1505,7 +1579,9 @@ public final class SolverEngine {
         int rolloutLimit;
         if ("fast".equals(mode)) {
             beamWidth = 55;
-            rolloutLimit = 0;
+            // Прогноз следующей руки должен работать во всех режимах: лёгкая
+            // прокатка по3 финалиста — дёшево (~30 мс), но учитывает предсказание.
+            rolloutLimit = 3;
         } else if ("survival".equals(mode)) {
             beamWidth = 220;
             rolloutLimit = 18;
@@ -1666,6 +1742,11 @@ public final class SolverEngine {
             Node best = finalists.get(rankIdx);
             SolvePlan plan = new SolvePlan();
             plan.rank = rankIdx + 1;
+            plan.predictedNextHand = predNextHand;
+            if (predNextHand != null && predNextHand.size() == 3) {
+                plan.predictedHandText = formatLayersPlain(predNextHand.get(0)) + " · "
+                        + formatLayersPlain(predNextHand.get(1)) + " · " + formatLayersPlain(predNextHand.get(2));
+            }
             plan.evalScore = Math.round(best.eval * 100.0) / 100.0;
             plan.isWin = best.isWin;
             plan.totalComboBonus = best.comboSum;

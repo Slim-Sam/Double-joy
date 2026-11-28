@@ -558,12 +558,19 @@ public final class AppState {
         }
     }
 
+    /** Шанс пройти этап, % (считается только по «⏩ Шаг+Рука», без подсказок); -1 = ещё не считали. */
+    public int lastPassProbPct = -1;
+    /** Текст прогноза следующей руки (все режимы расчёта). */
+    public String lastPredHandText = "";
+
     public synchronized JSONObject buildWebSyncPayload() {
         JSONObject payload = new JSONObject();
         try {
             payload.put("stateSeq", stateSeq);
             payload.put("snapshot", buildCurrentSnapshotJson());
             payload.put("mode", mode);
+            payload.put("passProbPct", lastPassProbPct);
+            payload.put("predHandText", lastPredHandText != null ? lastPredHandText : "");
 
             if (pendingDiffResult != null) {
                 payload.put("pendingDiff", SolverEngine.boardDiffToJson(pendingDiffResult));

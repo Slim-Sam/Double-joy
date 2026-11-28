@@ -1843,6 +1843,11 @@ APK_PHONE_RUNTIME_JS = r"""
             <span style="font-size:12px; font-weight:700; color:#cbd5e1; white-space:nowrap;">🧠 Режим расчёта:</span>
           </div>
           <div id="apkSolverModeDesc" style="font-size:11px; color:#94a3b8; line-height:1.38; margin-top:6px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);"></div>
+          <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-top:6px; padding-top:5px; border-top:1px solid rgba(51,65,85,0.65);">
+            <span style="font-size:12.5px; font-weight:800; color:#cbd5e1;">🎲 Шанс прохождения: <b id="apkPassProbVal" style="color:#f8fafc;">—</b></span>
+            <span style="font-size:10px; font-weight:600; color:#64748b;">без подсказок · по Шаг+Рука</span>
+          </div>
+          <div style="font-size:11px; color:#7dd3fc; margin-top:4px; font-weight:700; letter-spacing:0.2px;">🔮 Сл. рука: <span id="apkPredHandVal" style="color:#bae6fd; font-weight:600;">—</span></div>
         </div>
         <div style="background:#172136; border:1px solid #334155; border-radius:9px; padding:8px 9px; margin-bottom:10px;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
@@ -1900,7 +1905,7 @@ APK_PHONE_RUNTIME_JS = r"""
     el.saveLoadDrawer.classList.remove("hidden");
 
     const SOLVE_MODE_HINTS = {
-      fast: "⚡ Мгновенный поиск (55 лучей, без долгого прогноза будущей руки) — для быстрых простых этапов.",
+      fast: "⚡ Мгновенный поиск (55 лучей + лёгкий прогноз следующей руки) — для быстрых простых этапов.",
       balanced: "⚖️ Баланс очков, комбо и прогноза на 14 будущих раздач (160 лучей) — оптимально для постоянной игры.",
       survival: "🛡 Усиленная расчистка башен и сохранение пустых клеток ×1.35 (220 лучей) — когда на поле тесно (≤ 3–4 клеток).",
       deep: "🔬 Максимальная глубина перебора (340 лучей + двойной прогноз по 24 финалистам) — для сложных концовок.",
@@ -3722,6 +3727,19 @@ def main() -> None:
           el.solveModeSelect.value = obj.mode;
           try { localStorage.setItem(SOLVE_MODE_STORAGE_KEY, obj.mode); } catch (_) {}
           updateSolveModeDesc();
+        }
+        // 🎲 Шанс прохождения (считается на «Шаг+Рука», без подсказок) + прогноз руки.
+        if (obj.passProbPct !== undefined && obj.passProbPct !== null) {
+          const pv = document.getElementById("apkPassProbVal");
+          if (pv) {
+            const pp = Number(obj.passProbPct);
+            pv.textContent = pp >= 0 ? pp + "%" : "—";
+            pv.style.color = pp >= 80 ? "#4ade80" : (pp >= 50 ? "#facc15" : (pp >= 0 ? "#f87171" : "#f8fafc"));
+          }
+        }
+        if (obj.predHandText !== undefined) {
+          const ph = document.getElementById("apkPredHandVal");
+          if (ph) ph.textContent = (obj.predHandText && String(obj.predHandText).length) ? obj.predHandText : "—";
         }
         window.apkJustChangedStage = true;
         if (Array.isArray(obj.logEntries) && obj.logEntries.length > 0) {
