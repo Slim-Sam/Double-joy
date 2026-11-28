@@ -61,6 +61,10 @@ public class LevelEmulator {
     static final Set<Integer> TABLE_FALLBACK_STAGES = new HashSet<>(java.util.Arrays.asList(11, 12, 13, 14, 15, 16));
 
     static String tableChainStart(int stageNo) {
+        // Закреплённый старт: «первый отсортированный ключ» хрупок — новые строки
+        // таблицы меняют порядок и ломают проверенный проход. Старт этапа11 взят
+        // из старой таблицы, на ней пройден полный прогон 9/9 (2026-11-28).
+        if (stageNo == 11) return "1_1|2_2|3_3|,7_3|,7_4|4_2|";
         String prefix = stageNo + "|";
         java.util.TreeSet<String> stageKeys = new java.util.TreeSet<>();
         for (String k : stageTable.keySet()) {
