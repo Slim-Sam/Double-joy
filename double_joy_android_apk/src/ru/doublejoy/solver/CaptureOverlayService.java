@@ -1372,14 +1372,30 @@ public final class CaptureOverlayService extends Service {
                     st.lastPredHandText = (st.lastPlan != null && st.lastPlan.predictedHandText != null)
                             ? st.lastPlan.predictedHandText : "";
                     // Шанс прохождения (%) — СЧИТАЕТСЯ ТОЛЬКО по «⏩ Шаг+Рука», без подсказок.
+                    // ВАЖНО: считается В ФОНЕ (очередь того же worker), чтобы план показался
+                    // СРАЗУ: основная задача пушит план немедленно, % долетит отдельным пушем.
                     if (advancePrevPlanFirst) {
-                        List<List<SolverEngine.Layer>> handNow = new ArrayList<>(3);
+                        final SolverEngine.SolvePlan planF = st.lastPlan;
+                        final int scoreF = st.curScore;
+                        final int targetF = stg.targetScore;
+                        final int stageF = st.stageNo;
+                        final List<List<SolverEngine.Layer>> handNow = new ArrayList<>(3);
                         for (int slot = 1; slot <= 3; slot++) {
                             List<SolverEngine.Layer> sl = st.waits.get(slot);
                             if (sl != null) handNow.add(sl);
                         }
-                        st.lastPassProbPct = SolverEngine.estimatePassProbability(
-                                st.lastPlan, handNow, st.curScore, stg.targetScore, st.stageNo);
+                        st.lastPassProbPct = -1; // старый % не должен врать про новое нажатие
+                        worker.execute(() -> {
+                            try {
+                                int pct = SolverEngine.estimatePassProbability(planF, handNow, scoreF, targetF, stageF);
+                                st.lastPassProbPct = pct;
+                                st.hasPendingNativeUpdate = true;
+                                mainHandler.post(() -> {
+                                    refreshOverlayUi();
+                                    MainActivity.notifyNativeStateUpdated();
+                                });
+                            } catch (Exception ignored) {}
+                        });
                     }
                     if (!advancePrevPlanFirst) {
                         st.pushCausalHistoryStep(SolverEngine.CausalHistoryStep.fromVision(
