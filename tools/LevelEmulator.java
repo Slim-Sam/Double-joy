@@ -106,7 +106,8 @@ public class LevelEmulator {
             }
         }
         // fallback: синтетика по прогрессу счёта (как в прокатке движка)
-        return synthetic(round, cur == null ? 0 : -1);
+        List<List<SolverEngine.Layer>> syn = synthetic(round, cur == null ? 0 : -1);
+        return syn;
     }
 
     static int synthBracket = 0; // выставляется извне по прогрессу
@@ -182,7 +183,96 @@ public class LevelEmulator {
         return best;
     }
 
-    static StageResult playStage(SolverEngine.StageCfg stg, String mode, int rerollBudget, int hammerBudget, int maxHands) throws Exception {
+    // ---------- ПРОКАТКИ ДО КОНЦА: «сначала рассчитай победу» ----------
+    static boolean placeableLight(SolverEngine.CellState c, int score) {
+        if (c == null || c.exist != 1) return false;
+        if (c.lockScore > 0 && score < c.lockScore) return false;
+        if (c.lockCardScore > 0 && score < c.lockCardScore) return false;
+        return c.layers.isEmpty();
+    }
+
+    static boolean sameCard(List<SolverEngine.Layer> a, List<SolverEngine.Layer> b) {
+        if (a == null || b == null || a.size() != b.size()) return false;
+        for (int i = 0; i < a.size(); i++)
+            if (a.get(i).colour != b.get(i).colour || a.get(i).count != b.get(i).count) return false;
+        return true;
+    }
+
+    /**
+     * Быстрая эвристика: играет руку(и) до победы или тупика (нет пустых клеток).
+     * Подсказки не используются. Возвращает итоговый счёт (>= target — победа).
+     */
+    static int fastPlay(SolverEngine.CellState[] cells, int score,
+                        List<List<SolverEngine.Layer>> hand, List<List<SolverEngine.Layer>> keyHand,
+                        int round, java.util.Random rng, SolverEngine.StageCfg stg) throws Exception {
+        List<List<SolverEngine.Layer>> cur = new ArrayList<>(hand);
+        List<List<SolverEngine.Layer>> key = new ArrayList<>(keyHand);
+        int hands = 0;
+        while (hands < 300) {
+            // играем, пока есть пустые клетки и карты
+            while (!cur.isEmpty()) {
+                boolean anyEmpty = false;
+                for (int cid = 1; cid <= SolverEngine.MAX_POS_COUNT; cid++)
+                    if (placeableLight(cells[cid], score)) { anyEmpty = true; break; }
+                if (!anyEmpty) return score; // тупик: карты на руке, пустых клеток нет
+                List<List<SolverEngine.Layer>> order = new ArrayList<>(cur);
+                java.util.Collections.shuffle(order, rng);
+                for (List<SolverEngine.Layer> card : order) {
+                    java.util.List<Integer> empties = new java.util.ArrayList<>();
+                    for (int cid = 1; cid <= SolverEngine.MAX_POS_COUNT; cid++)
+                        if (placeableLight(cells[cid], score)) empties.add(cid);
+                    if (empties.isEmpty()) break;
+                    java.util.Collections.shuffle(empties, rng);
+                    int limit = Math.min(empties.size(), 4);
+                    int chosenT = -1; double chosenG = -1;
+                    SolverEngine.CellState[] cc = null; int cs = -1;
+                    for (int t = 0; t < limit; t++) {
+                        SolverEngine.SimResult sr = SolverEngine.simulatePlaceCard(cells, card, empties.get(t), score);
+                        if (!sr.valid) continue;
+                        if (sr.gainedScore > chosenG) { chosenG = sr.gainedScore; chosenT = t; cc = sr.newCells; cs = sr.finalScore; }
+                        if (sr.gainedScore > 0) break; // каскад — не ищем дальше
+                    }
+                    if (chosenT < 0) continue;
+                    cells = cc; score = cs;
+                    cur.remove(card);
+                    if (score >= stg.targetScore) return score;
+                    break; // ход сделан — переходим к следующей итерации
+                }
+            }
+            if (score >= stg.targetScore) return score;
+            // рука выработана → следующая из цепочки (таблица → синтетика)
+            hands++;
+            double prog = stg.targetScore > 0 ? (double) score / stg.targetScore : 0;
+            synthBracket = prog < 0.35 ? 0 : (prog < 0.78 ? 1 : 2);
+            List<List<SolverEngine.Layer>> nxt = nextHand(stg.stageNo, key, round++);
+            key = new ArrayList<>(nxt);
+            cur = new ArrayList<>(nxt); // копия: не мутируем списки сьютов движка
+        }
+        return score;
+    }
+
+    /** Доля побед в N прокатках после первого шага кандидата (дальше — быстрая эвристика). */
+    static double winRate(SolverEngine.CellState[] board, int score, List<List<SolverEngine.Layer>> hand,
+                          SolverEngine.StageCfg stg, SolverEngine.StepMove first, int round, int n, long seed) throws Exception {
+        int wins = 0;
+        for (int i = 0; i < n; i++) {
+            java.util.Random rng = new java.util.Random(seed + i * 104729L);
+            SolverEngine.SimResult s0 = SolverEngine.simulatePlaceCard(board, first.cardLayers, first.targetCellId, score);
+            if (!s0.valid) continue;
+            List<List<SolverEngine.Layer>> rest = new ArrayList<>();
+            boolean removed = false;
+            for (List<SolverEngine.Layer> c : hand) {
+                if (!removed && sameCard(c, first.cardLayers)) { removed = true; continue; }
+                rest.add(c);
+            }
+            if (!removed) { rest = new ArrayList<>(hand); }
+            int fin = fastPlay(s0.newCells, s0.finalScore, rest, hand, round + 1, rng, stg);
+            if (fin >= stg.targetScore) wins++;
+        }
+        return n > 0 ? (double) wins / n : 0.0;
+    }
+
+    static StageResult playStage(SolverEngine.StageCfg stg, String mode, int rerollBudget, int hammerBudget, int maxHands, int rolloutN) throws Exception {
         StageResult res = new StageResult();
         SolverEngine.CellState[] board = SolverEngine.createStageBoard(stg, 0);
         int score = 0;
@@ -198,6 +288,30 @@ public class LevelEmulator {
             List<SolverEngine.SolvePlan> plans = SolverEngine.solveTopPlans(
                     board, toWaits(hand), score, stg.targetScore, mode, 3, stg.stageNo, false);
             SolverEngine.SolvePlan plan = (plans != null && !plans.isEmpty()) ? plans.get(0) : null;
+            if (plan != null && rolloutN > 0 && plans.size() > 1) {
+                // «Сначала рассчитай победу»: для каждого уникального первого шага — N партий до конца
+                int bestIdx = 0; double bestW = -1; double w0 = -1;
+                int savedBracket = synthBracket; // прокатки не должны менять выбор следующей руки
+                java.util.Map<String, Boolean> seen = new java.util.HashMap<>();
+                for (int ci = 0; ci < plans.size(); ci++) {
+                    SolverEngine.SolvePlan cp = plans.get(ci);
+                    if (cp.steps == null || cp.steps.isEmpty()) continue;
+                    SolverEngine.StepMove fs = cp.steps.get(0);
+                    String key = fs.targetCellId + "#" + slotSig(fs.cardLayers);
+                    if (seen.containsKey(key)) continue;
+                    seen.put(key, Boolean.TRUE);
+                    double w = winRate(board, score, hand, stg, fs, round, rolloutN,
+                            (long) stg.stageNo * 1000003L + res.hands * 1009L + round * 17L + ci * 7919L);
+                    if (ci == 0) w0 = w;
+                    if (w > bestW) { bestW = w; bestIdx = ci; }
+                }
+                synthBracket = savedBracket;
+                // консервативный гейт: переключаемся только при перевесе над ходом rank0
+                if (bestW > 0 && bestW >= w0 + 0.15) {
+                    if (bestIdx != 0) System.out.println("  [SWITCH] ход " + res.hands + ": rank0 w=" + w0 + " -> канд" + bestIdx + " w=" + bestW);
+                    plan = plans.get(bestIdx);
+                }
+            }
 
             if (plan == null || plan.steps == null || plan.steps.isEmpty()) {
                 // 1) МОЛОТОК: расчистить место и продолжить с той же рукой
@@ -275,6 +389,7 @@ public class LevelEmulator {
         int to = args.length > 3 ? Integer.parseInt(args[3]) : 16;
         int rerollBudget = args.length > 4 ? Integer.parseInt(args[4]) : 8;
         int hammerBudget = args.length > 5 ? Integer.parseInt(args[5]) : 8;
+        int rolloutN = args.length > 6 ? Integer.parseInt(args[6]) : 0;
 
         // Подсказки игры НЕ учитываем: молоток, обновление (реролл), перенос столбца —
         // только чистая игра решалкой (бюджеты молотка/реролла приходят = 0 извне).
@@ -284,7 +399,7 @@ public class LevelEmulator {
         loadTransitions();
         Map<Integer, SolverEngine.StageCfg> stages = loadStages(cfg);
         System.out.println("Эмулятор этапов " + from + ".." + to + " | режим=" + mode
-                + " | рероллов на этап: " + rerollBudget + " | молотков: " + hammerBudget
+                + " | рероллов на этап: " + rerollBudget + " | молотков: " + hammerBudget + " | прокаток: " + rolloutN
                 + " | переходов в таблице: " + stageTable.size() + "+"
                 + globalTable.size());
         System.out.println();
@@ -298,7 +413,7 @@ public class LevelEmulator {
             }
             total++;
             long t0 = System.currentTimeMillis();
-            StageResult r = playStage(stg, mode, rerollBudget, hammerBudget, 150);
+            StageResult r = playStage(stg, mode, rerollBudget, hammerBudget, 150, rolloutN);
             long ms = System.currentTimeMillis() - t0;
             if ("PASS".equals(r.status)) passed++;
             System.out.printf("Этап %2d: %-7s счёт %3d/%d | рук %d (реролл %d, молоток %d, ходов %d) | %.1f с | %s%n",
